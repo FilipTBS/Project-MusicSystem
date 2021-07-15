@@ -1,3 +1,4 @@
+using MusicSystem.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -19,7 +20,8 @@ namespace MusicSystem
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<MusicSystemDbContext>(options 
-                => options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
+                => options
+                  .UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -38,6 +40,8 @@ namespace MusicSystem
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.PrepareDatabase();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
