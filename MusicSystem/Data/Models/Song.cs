@@ -20,6 +20,7 @@ namespace MusicSystem.Data.Models
         [Required, MaxLength(SongGenreMaxValue)]
         public string Genre { get; set; }
 
+        [Required]
         public string Lyrics { get; set; }
 
         public bool CuratorVerified { get; set; }

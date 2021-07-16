@@ -16,5 +16,7 @@
 
         public const int ArtistGenreMinValue = 2;
         public const int ArtistGenreMaxValue = 10;
+
+        public const int SongLyricsMinValue = 20;
     }
 }
