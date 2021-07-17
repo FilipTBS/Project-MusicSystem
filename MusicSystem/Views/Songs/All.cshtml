@@ -1,0 +1,17 @@
+﻿@model IEnumerable<SongListingViewModel>
+
+<div class="row">
+    @foreach (var song in Model)
+    {
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-subtitle">@song.Artist</h5>
+                <h5 class="card-title">@song.Title</h5>
+                <h6 class="card-genre">@song.Genre</h6>
+                <h6 class="card-likes">Likes: @song.Likes</h6>
+                <a href="@song.SongUrl" class="card-link">Link here</a>
+                <a asp-controller="Songs" asp-action="Lyrics" asp-route-id="@song.Id" class="card-link">Lyrics here</a>
+            </div>
+        </div>
+    }
+</div>

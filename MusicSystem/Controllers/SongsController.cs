@@ -46,7 +46,7 @@ namespace MusicSystem.Controllers
             this.data.Songs.Add(songObject);
             this.data.SaveChanges();
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(All));
         }
 
         private IEnumerable<SongArtistViewModel> GetSongArtists()
@@ -55,5 +55,36 @@ namespace MusicSystem.Controllers
             Id = x.Id,
             Name = x.Name
         }).ToList();
+
+        public IActionResult All()
+        {
+            var songs = this.data.Songs
+                .OrderBy(x => x.Title)
+                .Select(x => new SongListingViewModel
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Artist = x.Artist.Name,
+                Genre = x.Genre,
+                SongUrl = x.SongUrl,
+                Lyrics = x.Lyrics,
+                Likes = x.Likes
+            }).ToList();
+
+            return View(songs);
+        }
+
+        public IActionResult Lyrics(string id)
+        {
+            var song = this.data.Songs.Where(x => x.Id == id).FirstOrDefault();
+
+            var songLyrics = new SongLyricsViewModel
+            {
+                Id = id,
+                Lyrics = song.Lyrics
+            };
+
+            return View(songLyrics);
+        }
     }
 }
