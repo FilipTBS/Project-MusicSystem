@@ -56,9 +56,31 @@ namespace MusicSystem.Controllers
             Name = x.Name
         }).ToList();
 
-        public IActionResult All()
+        public IActionResult All([FromQuery]SongsQueryModel query)
         {
+            var songsQuery = this.data.Songs.AsQueryable();
+
+
+            //To check the filtering and search (also in Views -> Songs -> All)
+             /*
+            if (!string.IsNullOrWhiteSpace(query.Artist))
+            {
+                songsQuery = songsQuery.Where(x => x.Artist.Name == query.Artist);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SearchTerm))
+            {
+                songsQuery = songsQuery
+                    .Where(x => 
+                    (x.Artist.Name + " " + x.Title).ToLower()
+                    .Contains(query.SearchTerm.ToLower()));
+            }*/
+
+            var totalSongs = songsQuery.Count();
+
             var songs = this.data.Songs
+                .Skip((query.CurrentPage - 1) * SongsQueryModel.SongsPerPage)
+                .Take(SongsQueryModel.SongsPerPage)
                 .OrderBy(x => x.Title)
                 .Select(x => new SongListingViewModel
             {
@@ -71,7 +93,15 @@ namespace MusicSystem.Controllers
                 Likes = x.Likes
             }).ToList();
 
-            return View(songs);
+            var songArtist = this.data.Songs
+                .Select(x => x.Artist.Name)
+                .Distinct().OrderBy(x => x).ToList();
+
+            query.TotalSongs = totalSongs;
+            query.Artists = songArtist;
+            query.Songs = songs;
+
+            return View(query);
         }
 
         public IActionResult Lyrics(string id)
