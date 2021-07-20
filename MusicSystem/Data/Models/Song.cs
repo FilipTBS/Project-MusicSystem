@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using static MusicSystem.Data.Constants;
+using static MusicSystem.Data.Constants.Song;
 
 namespace MusicSystem.Data.Models
 {
@@ -12,7 +12,7 @@ namespace MusicSystem.Data.Models
         [Required, MaxLength(SongTitleMaxValue)]
         public string Title { get; set; }
 
-        public Artist Artist { get; set; }
+        public Artist Artist { get; init; }
 
         public string ArtistId { get; set; }
 
@@ -32,5 +32,9 @@ namespace MusicSystem.Data.Models
         public string SongUrl { get; set; }
 
         public int Likes { get; set; }
+
+        public string CuratorId { get; init; }
+
+        public Curator Curator { get; init; }
     }
 }

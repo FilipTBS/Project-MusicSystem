@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MusicSystem.Data.Models;
 
@@ -7,7 +8,9 @@ namespace MusicSystem.Data
     public class MusicSystemDbContext : IdentityDbContext
     {
         public DbSet<Artist> Artists { get; set; }
-        public DbSet<Song> Songs { get; set; }     
+        public DbSet<Song> Songs { get; set; }
+
+        public DbSet<Curator> Curators { get; set; }
 
         public MusicSystemDbContext(DbContextOptions<MusicSystemDbContext> options)
             : base(options)
@@ -19,7 +22,20 @@ namespace MusicSystem.Data
             builder.Entity<Song>()
             .HasOne(x => x.Artist)
             .WithMany(x => x.Songs)
-            .HasForeignKey(x => x.ArtistId);
+            .HasForeignKey(x => x.ArtistId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Song>()
+                .HasOne(x => x.Curator)
+                .WithMany(x => x.Songs)
+                .HasForeignKey(x => x.CuratorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Curator>()
+                .HasOne<IdentityUser>()
+                .WithOne()
+                .HasForeignKey<Curator>(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);
         }

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using static MusicSystem.Data.Constants;
+using static MusicSystem.Data.Constants.Artist;
 
 namespace MusicSystem.Data.Models
 {
     public class Artist
     {
-        [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
         [Required, MaxLength(ArtistNameMaxValue)]
@@ -15,8 +14,7 @@ namespace MusicSystem.Data.Models
 
         [Required, MaxLength(ArtistGenreMaxValue)]
         public string Genre { get; set; }
-
-        public ICollection<Song> Songs { get; set; } 
+        public ICollection<Song> Songs { get; set; }
             = new List<Song>();
 
         public int SongsCount => this.Songs.Count;
