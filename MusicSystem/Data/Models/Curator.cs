@@ -8,7 +8,7 @@ namespace MusicSystem.Data
 {
     public class Curator
     {
-        public string Id { get; init; }
+        public int Id { get; init; }
 
         [Required, MaxLength(CuratorNameMaxValue)]
         public string Name { get; set; }

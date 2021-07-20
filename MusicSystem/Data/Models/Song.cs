@@ -33,7 +33,7 @@ namespace MusicSystem.Data.Models
 
         public int Likes { get; set; }
 
-        public string CuratorId { get; init; }
+        public int CuratorId { get; init; }
 
         public Curator Curator { get; init; }
     }

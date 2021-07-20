@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Data;
 using MusicSystem.Data.Models;
+using MusicSystem.Infrastructure;
 using MusicSystem.Models.Songs;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace MusicSystem.Controllers
 {
@@ -11,16 +15,40 @@ namespace MusicSystem.Controllers
     {
         private readonly MusicSystemDbContext data;
 
-        public SongsController(MusicSystemDbContext data) => this.data = data;
+        public SongsController(MusicSystemDbContext data)
+        => this.data = data;
+            
 
-        public IActionResult Add() => View(new AddSongFormModel
+        [Authorize]
+        public IActionResult Add()
         {
-            Artists = this.GetSongArtists()
-        });
+            if (!this.UserIsCurator())
+            {
+                return RedirectToAction(nameof(CuratorsController.Become), "Curators");
+            }
+
+            return View(new AddSongFormModel
+            {
+                Artists = this.GetSongArtists()
+            });
+            
+        }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Add(AddSongFormModel song)
         {
+            var curatorId = this.data.Curators
+                .Where(x => x.UserId == this.User.GetId())
+                .Select(x => x.Id).FirstOrDefault();
+
+
+
+            if (curatorId == 0)
+            {
+                return RedirectToAction(nameof(CuratorsController.Become), "Curators");
+            }
+
             if (!this.data.Artists.Any(x => x.Id == song.ArtistId))
             {
                 this.ModelState.AddModelError(nameof(song.ArtistId), "Artist does not exist!");
@@ -40,7 +68,9 @@ namespace MusicSystem.Controllers
                 Genre = song.Genre,
                 Lyrics = song.Lyrics,
                 Language = song.Language,
-                SongUrl = song.SongUrl
+                SongUrl = song.SongUrl,
+                CuratorId = curatorId,
+                CuratorVerified = true
             };
 
             this.data.Songs.Add(songObject);
@@ -116,5 +146,8 @@ namespace MusicSystem.Controllers
 
             return View(songLyrics);
         }
+
+        private bool UserIsCurator()
+        => this.data.Curators.Any(x => x.UserId == this.User.GetId());
     }
 }

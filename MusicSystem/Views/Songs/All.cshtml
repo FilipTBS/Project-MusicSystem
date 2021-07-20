@@ -42,6 +42,14 @@
 
 }
 
+@if (!Model.Songs.Any())
+{
+    <h2 class="text-center">No songs available, become a Curator and add some</h2>
+}
+
+@if (Model.Songs.Any())
+{
+
 <div class="row mb-5">
 
     <div class="col-md-6">
@@ -49,20 +57,17 @@
            asp-controller="Songs" asp-action="All"
            asp-route-currentPage="@previousPage"
            asp-route-artist="@Model.Artist"
-           asp-route-searchTerm="@Model.SearchTerm"><<</a>
+           asp-route-searchTerm="@Model.SearchTerm">Previous</a>
     </div>
     <div class="col-md-6">
         <a class="btn btn-primary float-right @(Model.CurrentPage == maxPage ? "disabled" : string.Empty)"
            asp-controller="Songs" asp-action="All"
            asp-route-currentPage="@(Model.CurrentPage + 1)"
            asp-route-artist="@Model.Artist"
-           asp-route-searchTerm="@Model.SearchTerm">>></a>
+           asp-route-searchTerm="@Model.SearchTerm">Next</a>
     </div>
 </div>
 
-@if (!Model.Songs.Any())
-{
-    <h2 class="text-center">No songs found by the given criteria!</h2>
 }
 
 <div class="row">

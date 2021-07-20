@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using static MusicSystem.Data.Constants;
+using static MusicSystem.Data.Constants.Song;
 
 namespace MusicSystem.Models.Songs
 {

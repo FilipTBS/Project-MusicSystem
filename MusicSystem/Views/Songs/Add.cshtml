@@ -1,13 +1,13 @@
 ﻿@model AddSongFormModel
 
 @{ 
-    ViewData["Title"] = "Add Song";
+    ViewBag.Title = "Add Song";
 }
 
 <div class="container">
     <div class="row">
         <div class="offset-md-2 col-md-8 col-sm-12">
-            <h2 class="text-center">Add Song</h2>
+            <h2 class="text-center">@ViewBag.Title</h2>
             <form method="post">
                 <div class="form-group">
                     <label asp-for="Title"></label>
