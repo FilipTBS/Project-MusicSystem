@@ -1,28 +1,36 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Data;
 using MusicSystem.Data.Models;
 using MusicSystem.Infrastructure;
 using MusicSystem.Models.Songs;
+using MusicSystem.Services.Curators;
+using MusicSystem.Services.Songs;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 
 namespace MusicSystem.Controllers
 {
     public class SongsController : Controller
     {
+        private readonly ISongService songs;
+        private readonly ICuratorService curators;
         private readonly MusicSystemDbContext data;
 
-        public SongsController(MusicSystemDbContext data)
-        => this.data = data;
-            
+        public SongsController(ISongService songs, 
+            MusicSystemDbContext data,
+            ICuratorService curators)
+        {
+            this.data = data;
+            this.songs = songs;
+            this.curators = curators;
+        }
+                   
 
         [Authorize]
         public IActionResult Add()
         {
-            if (!this.UserIsCurator())
+            if (!this.curators.IsCurator(this.User.GetId()))
             {
                 return RedirectToAction(nameof(CuratorsController.Become), "Curators");
             }
@@ -86,50 +94,23 @@ namespace MusicSystem.Controllers
             Name = x.Name
         }).ToList();
 
-        public IActionResult All([FromQuery]SongsQueryModel query)
+        public IActionResult All([FromQuery]AllSongsQueryModel query)
         {
-            var songsQuery = this.data.Songs.AsQueryable();
+            var queryResult = this.songs.All(
+                query.Artist,
+                query.SearchTerm,
+                query.Sorting,
+                query.CurrentPage,
+                AllSongsQueryModel.SongsPerPage);
+            //string artist,
+            //string searchTerm, SongSorting sorting,
+            //int currentPage, int songsPerPage
 
+            var songArtists = this.songs.AllArtists();
 
-            //To check the filtering and search (also in Views -> Songs -> All)
-             /*
-            if (!string.IsNullOrWhiteSpace(query.Artist))
-            {
-                songsQuery = songsQuery.Where(x => x.Artist.Name == query.Artist);
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.SearchTerm))
-            {
-                songsQuery = songsQuery
-                    .Where(x => 
-                    (x.Artist.Name + " " + x.Title).ToLower()
-                    .Contains(query.SearchTerm.ToLower()));
-            }*/
-
-            var totalSongs = songsQuery.Count();
-
-            var songs = this.data.Songs
-                .Skip((query.CurrentPage - 1) * SongsQueryModel.SongsPerPage)
-                .Take(SongsQueryModel.SongsPerPage)
-                .OrderBy(x => x.Title)
-                .Select(x => new SongListingViewModel
-            {
-                Id = x.Id,
-                Title = x.Title,
-                Artist = x.Artist.Name,
-                Genre = x.Genre,
-                SongUrl = x.SongUrl,
-                Lyrics = x.Lyrics,
-                Likes = x.Likes
-            }).ToList();
-
-            var songArtist = this.data.Songs
-                .Select(x => x.Artist.Name)
-                .Distinct().OrderBy(x => x).ToList();
-
-            query.TotalSongs = totalSongs;
-            query.Artists = songArtist;
-            query.Songs = songs;
+            query.Artists = songArtists;
+            query.TotalSongs = queryResult.TotalSongs;
+            query.Songs = queryResult.Songs;
 
             return View(query);
         }
@@ -146,8 +127,5 @@ namespace MusicSystem.Controllers
 
             return View(songLyrics);
         }
-
-        private bool UserIsCurator()
-        => this.data.Curators.Any(x => x.UserId == this.User.GetId());
     }
 }

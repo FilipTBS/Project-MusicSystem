@@ -1,4 +1,4 @@
-﻿@model SongsQueryModel
+﻿@model AllSongsQueryModel
 
 @{
     ViewBag.Title = "All Songs";
@@ -38,7 +38,7 @@
         previousPage = 1;
     }
 
-    var maxPage = Math.Ceiling((double)Model.TotalSongs / SongsQueryModel.SongsPerPage);
+    var maxPage = Math.Ceiling((double)Model.TotalSongs / AllSongsQueryModel.SongsPerPage);
 
 }
 
@@ -75,7 +75,7 @@
     {
         <div class="card">
             <div class="card-body">
-                <h5 class="card-subtitle">@song.Artist</h5>
+                <h5 class="card-subtitle">@song.ArtistName</h5>
                 <h5 class="card-title">@song.Title</h5>
                 <h6 class="card-genre">@song.Genre</h6>
                 <h6 class="card-likes">Likes: @song.Likes</h6>
