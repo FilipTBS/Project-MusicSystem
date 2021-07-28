@@ -16,6 +16,7 @@ namespace MusicSystem.Controllers
         public IActionResult Index()
         {
             var totalSongs = this.data.Songs.Count();
+            var totalUsers = this.data.Users.Count();
 
             var songs = this.data.Songs
             .OrderBy(x => x.Title)
@@ -34,6 +35,7 @@ namespace MusicSystem.Controllers
             return View(new IndexViewModel
             {
                 TotalSongs = totalSongs,
+                TotalUsers = totalUsers,
                 Songs = songs
             });
         }
