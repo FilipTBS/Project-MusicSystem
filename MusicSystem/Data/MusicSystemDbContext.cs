@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MusicSystem.Data.Models;
 
 namespace MusicSystem.Data
 {
-    public class MusicSystemDbContext : IdentityDbContext
+    public class MusicSystemDbContext : IdentityDbContext<User>
     {
         public DbSet<Artist> Artists { get; set; }
         public DbSet<Song> Songs { get; set; }
-
         public DbSet<Curator> Curators { get; set; }
 
         public MusicSystemDbContext(DbContextOptions<MusicSystemDbContext> options)
@@ -31,8 +29,9 @@ namespace MusicSystem.Data
                 .HasForeignKey(x => x.CuratorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Curator>()
-                .HasOne<IdentityUser>()
+                builder
+                .Entity<Curator>()
+                .HasOne<User>()
                 .WithOne()
                 .HasForeignKey<Curator>(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict);

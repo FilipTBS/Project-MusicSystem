@@ -1,0 +1,10 @@
+﻿@model IEnumerable<SongServiceModel>
+
+@{ ViewBag.Title = "My Songs";
+                ViewBag.AllowSongEdit = true; }
+
+@if (!Model.Any())
+{
+<h2 class="text-center">You do not have any songs yet!</h2>}
+
+<partial name="_SongsPartial" model="@Model" />

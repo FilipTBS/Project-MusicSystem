@@ -23,11 +23,6 @@ namespace MusicSystem.Data.Models
         [Required]
         public string Lyrics { get; set; }
 
-        public bool CuratorVerified { get; set; }
-
-        [Required, MaxLength(SongLanguageMaxValue)]
-        public string Language { get; set; }
-
         [Required]
         public string SongUrl { get; set; }
 

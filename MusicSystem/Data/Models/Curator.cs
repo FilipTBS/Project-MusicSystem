@@ -19,8 +19,6 @@ namespace MusicSystem.Data
         [Required]
         public string UserId { get; set; }
 
-        public IdentityUser User { get; set; }
-
         public IEnumerable<Song> Songs { get; init; }
         = new List<Song>();
     }

@@ -1,9 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MusicSystem.Data;
 using MusicSystem.Data.Models;
+
+//using static WebConstants;
 
 namespace MusicSystem.Infrastructure
 {
@@ -12,21 +17,28 @@ namespace MusicSystem.Infrastructure
         public static IApplicationBuilder PrepareDatabase(
             this IApplicationBuilder app)
         {
-            using var scopedServices = app.ApplicationServices.CreateScope();
+            using var serviceScope = app.ApplicationServices.CreateScope();
+            var services = serviceScope.ServiceProvider;
 
-            var data = scopedServices.ServiceProvider
-                      .GetService<MusicSystemDbContext>();
+            MigrateDatabase(services);
 
-            data.Database.Migrate();
-
-            FillFamousArtists(data);
+            FillFamousArtists(services);
+            SeedAdministrator(services);
 
             return app;
         }
 
-        private static void FillFamousArtists(MusicSystemDbContext data)
+        private static void MigrateDatabase(IServiceProvider services)
         {
-                if (data.Artists.Any())
+            var data = services.GetRequiredService<MusicSystemDbContext>();
+
+            data.Database.Migrate();
+        }
+
+        private static void FillFamousArtists(IServiceProvider services)
+        {
+            var data = services.GetRequiredService<MusicSystemDbContext>();
+            if (data.Artists.Any())
                 {
                     return;
                 }
@@ -45,6 +57,41 @@ namespace MusicSystem.Infrastructure
                 });
 
                 data.SaveChanges();
+        }
+
+        private static void SeedAdministrator(IServiceProvider services)
+        {
+            var userManager = services.GetRequiredService<UserManager<User>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+            Task
+                .Run(async () =>
+                {
+                    if (await roleManager.RoleExistsAsync("Admin"))
+                    {
+                        return;
+                    }
+
+                    var role = new IdentityRole { Name = "Admin" };
+
+                    await roleManager.CreateAsync(role);
+
+                    const string adminEmail = "admin@crs.com";
+                    const string adminPassword = "admin12";
+
+                    var user = new User
+                    {
+                        Email = adminEmail,
+                        UserName = adminEmail,
+                        FullName = "Admin"
+                    };
+
+                    await userManager.CreateAsync(user, adminPassword);
+
+                    await userManager.AddToRoleAsync(user, role.Name);
+                })
+                .GetAwaiter()
+                .GetResult();
         }
     }
 }

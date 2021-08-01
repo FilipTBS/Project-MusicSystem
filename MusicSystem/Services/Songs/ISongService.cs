@@ -11,29 +11,30 @@ namespace MusicSystem.Services.Songs
                                  int currentPage,
                                  int songsPerPage);
 
+        SongLyricsServiceModel Lyrics(string songId);
+        SongInfoServiceModel GetSongInfo(string songId);
+
         string Create(
             string title,
             string artistId,
             string genre,
             string lyrics,
-            string language,
             string songUrl,
             int curatorId);
 
-        /*bool Edit(
-            int carId,
-            string brand,
-            string model,
-            string description,
-            string imageUrl,
-            int year,
-            int categoryId);*/
+        bool Edit(
+            string songId,
+            string title,
+            string artistId,
+            string lyrics,
+            string songUrl,
+            string genre);
 
-        //IEnumerable<SongServiceModel> ByUser(string userId);
+        IEnumerable<SongServiceModel> ByUser(string userId);
 
         bool IsByCurator(string songId, int curatorId);
 
-        IEnumerable<string> AllArtists();
+        IEnumerable<SongArtistModel> AllArtists();
 
         bool ArtistExists(string artistId);
     }

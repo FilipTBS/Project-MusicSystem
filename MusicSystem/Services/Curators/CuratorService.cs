@@ -12,15 +12,13 @@ namespace MusicSystem.Services
             => this.data = data;
 
         public bool IsCurator(string userId)
-            => this.data
-                .Curators
-                .Any(d => d.UserId == userId);
+            => this.data.Curators
+                .Any(x => x.UserId == userId);
 
         public int IdByUser(string userId)
-            => this.data
-                .Curators
-                .Where(d => d.UserId == userId)
-                .Select(d => d.Id)
+            => this.data.Curators
+                .Where(x => x.UserId == userId)
+                .Select(x => x.Id)
                 .FirstOrDefault();
     }
 }

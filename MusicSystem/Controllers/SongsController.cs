@@ -24,8 +24,7 @@ namespace MusicSystem.Controllers
             this.data = data;
             this.songs = songs;
             this.curators = curators;
-        }
-                   
+        }               
 
         [Authorize]
         public IActionResult Add()
@@ -35,22 +34,19 @@ namespace MusicSystem.Controllers
                 return RedirectToAction(nameof(CuratorsController.Become), "Curators");
             }
 
-            return View(new AddSongFormModel
+            return View(new SongFormModel
             {
                 Artists = this.GetSongArtists()
-            });
-            
+            });   
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult Add(AddSongFormModel song)
+        public IActionResult Add(SongFormModel song)
         {
             var curatorId = this.data.Curators
                 .Where(x => x.UserId == this.User.GetId())
                 .Select(x => x.Id).FirstOrDefault();
-
-
 
             if (curatorId == 0)
             {
@@ -75,10 +71,8 @@ namespace MusicSystem.Controllers
                 ArtistId = song.ArtistId,
                 Genre = song.Genre,
                 Lyrics = song.Lyrics,
-                Language = song.Language,
                 SongUrl = song.SongUrl,
-                CuratorId = curatorId,
-                CuratorVerified = true
+                CuratorId = curatorId
             };
 
             this.data.Songs.Add(songObject);
@@ -87,8 +81,8 @@ namespace MusicSystem.Controllers
             return RedirectToAction(nameof(All));
         }
 
-        private IEnumerable<SongArtistViewModel> GetSongArtists()
-        => this.data.Artists.Select(x => new SongArtistViewModel
+        private IEnumerable<SongArtistModel> GetSongArtists()
+        => this.data.Artists.Select(x => new SongArtistModel
         {
             Id = x.Id,
             Name = x.Name
@@ -102,9 +96,6 @@ namespace MusicSystem.Controllers
                 query.Sorting,
                 query.CurrentPage,
                 AllSongsQueryModel.SongsPerPage);
-            //string artist,
-            //string searchTerm, SongSorting sorting,
-            //int currentPage, int songsPerPage
 
             var songArtists = this.songs.AllArtists();
 
@@ -113,6 +104,82 @@ namespace MusicSystem.Controllers
             query.Songs = queryResult.Songs;
 
             return View(query);
+        }
+
+        [Authorize]
+        public IActionResult Mine()
+        {
+            var mySongs = this.songs.ByUser(this.User.GetId());
+
+            return View(mySongs);
+        }
+
+        [Authorize]
+        public IActionResult Edit(string id)
+        {
+            var userId = this.User.GetId();
+
+            if (!this.curators.IsCurator(userId) && !User.IsAdmin())
+            {
+                return RedirectToAction(nameof(CuratorsController.Become), "Dealers");
+            }
+
+            var song = this.songs.GetSongInfo(id);
+
+            if (song.UserId != userId && !User.IsAdmin())
+            {
+                return Unauthorized();
+            }
+
+            return View(new SongFormModel
+            {
+                Title = song.Title,
+                ArtistId = song.ArtistId,
+                Lyrics = song.Lyrics,
+                SongUrl = song.SongUrl,
+                Genre = song.Genre,
+                Artists = this.songs.AllArtists()
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Edit(string id, SongFormModel song)
+        {
+            var curatorId = this.curators.IdByUser(this.User.GetId());
+
+            if (curatorId == 0 && !User.IsAdmin())
+            {
+                return RedirectToAction(nameof(CuratorsController.Become), "Curators");
+            }
+
+            if (!this.songs.ArtistExists(song.ArtistId))
+            {
+                this.ModelState.AddModelError(nameof(song.ArtistId), "The artist doesn't exist!");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                song.Artists = this.songs.AllArtists();
+
+                return View(song);
+            }
+
+            if (!this.songs.IsByCurator(id, curatorId) && !User.IsAdmin())
+            {
+                return BadRequest();
+            }
+
+            this.songs.Edit(
+                id,
+                song.Title,
+                song.ArtistId,
+                song.Lyrics,
+                song.SongUrl,
+                song.Genre
+                );
+
+            return RedirectToAction(nameof(All));
         }
 
         public IActionResult Lyrics(string id)

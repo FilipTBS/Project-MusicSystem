@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MusicSystem.Data;
+﻿using MusicSystem.Data;
 using MusicSystem.Data.Models;
 using MusicSystem.Models.Songs;
 using System.Collections.Generic;
@@ -17,7 +16,7 @@ namespace MusicSystem.Services.Songs
         }
 
         public string Create(string title, string artistId,
-        string genre, string lyrics, string language,
+        string genre, string lyrics,
         string songUrl, int curatorId)
         {
             var songData = new Song
@@ -26,7 +25,6 @@ namespace MusicSystem.Services.Songs
                 ArtistId = artistId,
                 Genre = genre,
                 Lyrics = lyrics,
-                Language = language,
                 SongUrl = songUrl,
                 CuratorId = curatorId
             };
@@ -72,6 +70,56 @@ namespace MusicSystem.Services.Songs
             };
         }
 
+        public SongLyricsServiceModel Lyrics(string songId)
+        => this.data.Songs
+                .Where(c => c.Id == songId)
+                .Select(c => new SongLyricsServiceModel
+                {
+                    Id = c.Id,
+                    Lyrics = c.Lyrics
+                })
+                .FirstOrDefault();
+
+        public bool Edit(string songId, string title, 
+            string artistId, string lyrics, string songUrl, string genre)
+        {
+            var songData = this.data.Songs.Find(songId);
+
+            if (songData == null)
+            {
+                return false;
+            }
+
+            songData.Title = title;
+            songData.ArtistId = artistId;
+            songData.SongUrl = songUrl;
+            songData.Lyrics = lyrics;
+            songData.Genre = genre;
+
+            this.data.SaveChanges();
+
+            return true;
+        }
+
+        public SongInfoServiceModel GetSongInfo(string songId)
+        => this.data.Songs
+                .Where(c => c.Id == songId)
+                .Select(c => new SongInfoServiceModel
+                {
+                    Id = c.Id,
+                    Title = c.Title,
+                    ArtistId = c.ArtistId,
+                    Lyrics = c.Lyrics,
+                    Genre = c.Genre,
+                    SongUrl = c.SongUrl,
+                    ArtistName = c.Artist.Name,
+                    CuratorId = c.CuratorId,
+                    CuratorName = c.Curator.Name,
+                    UserId = c.Curator.UserId
+                })
+                .FirstOrDefault();
+
+
         private static IEnumerable<SongServiceModel> GetSongs(IQueryable<Song> songQuery)
         => songQuery
         .Select(s => new SongServiceModel
@@ -86,13 +134,21 @@ namespace MusicSystem.Services.Songs
 
         }).ToList();
 
-        public IEnumerable<string> AllArtists()
-         => this.data.Artists
-                .Select(x => x.Name)
+        public IEnumerable<string> AllTitles()
+         => this.data.Songs
+                .Select(x => x.Title)
                 .Distinct()
                 .OrderBy(x => x)
                 .ToList();
 
+        public IEnumerable<SongArtistModel> AllArtists()
+        => this.data.Artists
+                .Select(c => new SongArtistModel
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                })
+                .ToList();
 
         public bool ArtistExists(string artistId)
         => this.data.Songs
@@ -101,6 +157,11 @@ namespace MusicSystem.Services.Songs
         public bool IsByCurator(string songId, int curatorId)
         => this.data.Songs
                 .Any(c => c.Id == songId && c.CuratorId == curatorId);
+
+        public IEnumerable<SongServiceModel> ByUser(string userId)
+        => GetSongs(this.data.Songs
+                .Where(c => c.Curator.UserId == userId));
+
 
     }
 
