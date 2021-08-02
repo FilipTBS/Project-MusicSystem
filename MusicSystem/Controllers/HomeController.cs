@@ -1,42 +1,36 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MusicSystem.Data;
 using MusicSystem.Models;
 using MusicSystem.Models.Home;
 using System.Diagnostics;
 using System.Linq;
+using MusicSystem.Services.Songs;
+using MusicSystem.Services.Statistics;
 
 namespace MusicSystem.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly MusicSystemDbContext data;
+        private readonly ISongService songs;
+        private readonly IStatisticsService statistics;
 
-        public HomeController(MusicSystemDbContext data) => this.data = data;
+        public HomeController(ISongService songs, 
+            IStatisticsService statistics)
+        {
+            this.songs = songs;
+            this.statistics = statistics;
+        }
 
         public IActionResult Index()
         {
-            var totalSongs = this.data.Songs.Count();
-            var totalUsers = this.data.Users.Count();
+            var latestSongs = this.songs.Latest().ToList();
 
-            var songs = this.data.Songs
-            .OrderBy(x => x.Title)
-            .Select(x => new SongIndexViewModel
-            {
-               Id = x.Id,
-               Title = x.Title,
-               Artist = x.Artist.Name,
-               Genre = x.Genre,
-               SongUrl = x.SongUrl,
-               Lyrics = x.Lyrics,
-               Likes = x.Likes
-           })
-           .Take(10).ToList();
+            var totalStatistics = this.statistics.Total();
 
             return View(new IndexViewModel
             {
-                TotalSongs = totalSongs,
-                TotalUsers = totalUsers,
-                Songs = songs
+                TotalSongs = totalStatistics.TotalSongs,
+                TotalUsers = totalStatistics.TotalUsers,
+                Songs = latestSongs
             });
         }
 

@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Data;
-using MusicSystem.Data.Models;
 using MusicSystem.Infrastructure;
 using MusicSystem.Models.Songs;
 using MusicSystem.Services.Curators;
@@ -16,14 +16,16 @@ namespace MusicSystem.Controllers
         private readonly ISongService songs;
         private readonly ICuratorService curators;
         private readonly MusicSystemDbContext data;
+        private readonly IMapper mapper;
 
         public SongsController(ISongService songs, 
             MusicSystemDbContext data,
-            ICuratorService curators)
+            ICuratorService curators, IMapper mapper)
         {
             this.data = data;
             this.songs = songs;
             this.curators = curators;
+            this.mapper = mapper;
         }               
 
         [Authorize]
@@ -65,18 +67,12 @@ namespace MusicSystem.Controllers
                 return View(song);
             }
 
-            var songObject = new Song
-            {
-                Title = song.Title,
-                ArtistId = song.ArtistId,
-                Genre = song.Genre,
-                Lyrics = song.Lyrics,
-                SongUrl = song.SongUrl,
-                CuratorId = curatorId
-            };
-
-            this.data.Songs.Add(songObject);
-            this.data.SaveChanges();
+            this.songs.Create(song.Title,
+                song.ArtistId,
+                song.Genre,
+                song.Lyrics,
+                song.SongUrl,
+                curatorId);
 
             return RedirectToAction(nameof(All));
         }
@@ -131,15 +127,9 @@ namespace MusicSystem.Controllers
                 return Unauthorized();
             }
 
-            return View(new SongFormModel
-            {
-                Title = song.Title,
-                ArtistId = song.ArtistId,
-                Lyrics = song.Lyrics,
-                SongUrl = song.SongUrl,
-                Genre = song.Genre,
-                Artists = this.songs.AllArtists()
-            });
+            var songForm = this.mapper.Map<SongFormModel>(song);
+            songForm.Artists = this.songs.AllArtists();
+            return View(songForm);
         }
 
         [HttpPost]

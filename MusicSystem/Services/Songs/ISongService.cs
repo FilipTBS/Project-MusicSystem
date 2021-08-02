@@ -14,6 +14,8 @@ namespace MusicSystem.Services.Songs
         SongLyricsServiceModel Lyrics(string songId);
         SongInfoServiceModel GetSongInfo(string songId);
 
+        IEnumerable<LatestSongServiceModel> Latest();
+
         string Create(
             string title,
             string artistId,

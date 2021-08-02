@@ -1,7 +1,6 @@
 ﻿using MusicSystem.Services.Songs;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using static MusicSystem.Data.Constants;
 
 namespace MusicSystem.Models.Songs
 {
@@ -19,7 +18,7 @@ namespace MusicSystem.Models.Songs
 
         public SongSorting Sorting { get; init; }
 
-        public IEnumerable<string> Artists { get; set; }
+        public IEnumerable<SongArtistModel> Artists { get; set; }
 
         public IEnumerable<SongServiceModel> Songs { get; set; }
     }

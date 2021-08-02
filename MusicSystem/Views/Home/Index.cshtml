@@ -18,34 +18,53 @@
 
 <div class="mb-5"></div>
 @{
-    if (Model.Songs.Any())
-    {
-        <label>Latest added song:</label>
 
-        var song = Model.Songs.LastOrDefault();
-        <div class="card" style="max-width: 18rem;">
-            <div class="card-body">
-                <h5 class="card-subtitle">@song.Artist</h5>
-                <h5 class="card-title">@song.Title</h5>
-                <h6 class="card-genre">@song.Genre</h6>
-                <h6 class="card-likes">Likes: @song.Likes</h6>
-                <a href="@song.SongUrl" class="card-link">Link here</a>
-                <a asp-controller="Songs" asp-action="Lyrics" asp-route-id="@song.Id" class="card-link">Lyrics here</a>
+    if (Model.Songs.Any() && Model.Songs.Count >= 3)
+    {
+        <label>Latest 3 added songs:</label>
+
+        <div class="row">
+        @foreach (var song in Model.Songs)
+        {
+            <div class="card" style="max-width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-subtitle">@song.ArtistName</h5>
+                    <h5 class="card-title">@song.Title</h5>
+                    <h6 class="card-genre">@song.Genre</h6>
+                    <h6 class="card-likes">Likes: @song.Likes</h6>
+                    <a href="@song.SongUrl" class="card-link">Link here</a>
+                    <a asp-controller="Songs" asp-action="Lyrics" asp-route-id="@song.Id" class="card-link">Lyrics here</a>
+                </div>
             </div>
+        }
         </div>
     }
 }
 
-<div class="mb-5">
+<div class="mb-5"></div>
 
-    <div class="jumbotron">
-        <div class="row">
-            <h2 class="col-md-4 text-center">
-                @Model.TotalSongs Songs
-            </h2>
-            <h2 class="col-md-4 text-center">
-                @Model.TotalUsers Users
-            </h2>
-        </div>
+<div class="row">
+    <div class="col-12 text-center">
+        <button class="btn btn-primary" id="statistics-button">Show Statistics</button>
     </div>
 </div>
+
+<div class="jumbotron d-none" id="statistics">
+    <div class="row">
+        <h2 class="col-md-4 text-center" id="total-cars"></h2>
+        <h2 class="col-md-4 text-center" id="total-users"></h2>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $('#statistics-button').on('click', ev => {
+            $.get('/api/statistics', (data) => {
+                $('#total-cars').text(data.totalSongs + " Songs");
+                $('#total-users').text(data.totalUsers + " Users");
+
+                $('#statistics').removeClass('d-none');
+                $('#statistics-button').hide();
+            });
+        });</script>
+}

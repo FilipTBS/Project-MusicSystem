@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MusicSystem.Services.Songs;
+using System.Collections.Generic;
 
 namespace MusicSystem.Models.Home
 {
@@ -8,7 +9,7 @@ namespace MusicSystem.Models.Home
 
         public int TotalUsers { get; init; }
 
-        public List<SongIndexViewModel> Songs { get; init; }
+        public IList<LatestSongServiceModel> Songs { get; init; }
 
     }
 }

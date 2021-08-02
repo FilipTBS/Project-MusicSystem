@@ -3,16 +3,20 @@ using MusicSystem.Data.Models;
 using MusicSystem.Models.Songs;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace MusicSystem.Services.Songs
 {
     public class SongService : ISongService
     {
         private readonly MusicSystemDbContext data;
+        private readonly IConfigurationProvider mapper;
 
-        public SongService(MusicSystemDbContext data)
+        public SongService(MusicSystemDbContext data, IMapper mapper)
         {
             this.data = data;
+            this.mapper = mapper.ConfigurationProvider;
         }
 
         public string Create(string title, string artistId,
@@ -104,21 +108,16 @@ namespace MusicSystem.Services.Songs
         public SongInfoServiceModel GetSongInfo(string songId)
         => this.data.Songs
                 .Where(c => c.Id == songId)
-                .Select(c => new SongInfoServiceModel
-                {
-                    Id = c.Id,
-                    Title = c.Title,
-                    ArtistId = c.ArtistId,
-                    Lyrics = c.Lyrics,
-                    Genre = c.Genre,
-                    SongUrl = c.SongUrl,
-                    ArtistName = c.Artist.Name,
-                    CuratorId = c.CuratorId,
-                    CuratorName = c.Curator.Name,
-                    UserId = c.Curator.UserId
-                })
+                .ProjectTo<SongInfoServiceModel>(this.mapper)
                 .FirstOrDefault();
 
+
+        public IEnumerable<LatestSongServiceModel> Latest()
+        => this.data.Songs
+        .OrderByDescending(c => c.Id)
+        .ProjectTo<LatestSongServiceModel>(this.mapper)
+        .Take(3)
+        .ToList();
 
         private static IEnumerable<SongServiceModel> GetSongs(IQueryable<Song> songQuery)
         => songQuery
