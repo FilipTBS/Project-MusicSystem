@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MusicSystem.Data;
 using MusicSystem.Infrastructure;
 using MusicSystem.Models.Songs;
 using MusicSystem.Services.Curators;
 using MusicSystem.Services.Songs;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MusicSystem.Controllers
 {
@@ -15,18 +12,15 @@ namespace MusicSystem.Controllers
     {
         private readonly ISongService songs;
         private readonly ICuratorService curators;
-        private readonly MusicSystemDbContext data;
         private readonly IMapper mapper;
 
-        public SongsController(ISongService songs, 
-            MusicSystemDbContext data,
+        public SongsController(ISongService songs,
             ICuratorService curators, IMapper mapper)
         {
-            this.data = data;
             this.songs = songs;
             this.curators = curators;
             this.mapper = mapper;
-        }               
+        }
 
         [Authorize]
         public IActionResult Add()
@@ -38,31 +32,29 @@ namespace MusicSystem.Controllers
 
             return View(new SongFormModel
             {
-                Artists = this.GetSongArtists()
-            });   
+                Artists = this.songs.AllArtists()
+            });
         }
 
         [HttpPost]
         [Authorize]
         public IActionResult Add(SongFormModel song)
         {
-            var curatorId = this.data.Curators
-                .Where(x => x.UserId == this.User.GetId())
-                .Select(x => x.Id).FirstOrDefault();
+            var curatorId = this.curators.IdByUser(this.User.GetId());
 
             if (curatorId == 0)
             {
                 return RedirectToAction(nameof(CuratorsController.Become), "Curators");
             }
 
-            if (!this.data.Artists.Any(x => x.Id == song.ArtistId))
+            if (!this.songs.ArtistExists(song.ArtistId))
             {
-                this.ModelState.AddModelError(nameof(song.ArtistId), "Artist does not exist!");
+                this.ModelState.AddModelError(nameof(song.ArtistId), "This artist does not exist!");
             }
 
             if (!ModelState.IsValid)
             {
-                song.Artists = this.GetSongArtists();
+                song.Artists = this.songs.AllArtists();
 
                 return View(song);
             }
@@ -77,14 +69,7 @@ namespace MusicSystem.Controllers
             return RedirectToAction(nameof(All));
         }
 
-        private IEnumerable<SongArtistModel> GetSongArtists()
-        => this.data.Artists.Select(x => new SongArtistModel
-        {
-            Id = x.Id,
-            Name = x.Name
-        }).ToList();
-
-        public IActionResult All([FromQuery]AllSongsQueryModel query)
+        public IActionResult All([FromQuery] AllSongsQueryModel query)
         {
             var queryResult = this.songs.All(
                 query.Artist,
