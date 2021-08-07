@@ -174,7 +174,7 @@ namespace MusicSystem.Controllers
 
         public IActionResult Lyrics(string id)
         {
-            var song = this.data.Songs.Where(x => x.Id == id).FirstOrDefault();
+            var song = this.songs.GetLyrics(id);
 
             var songLyrics = new SongLyricsViewModel
             {

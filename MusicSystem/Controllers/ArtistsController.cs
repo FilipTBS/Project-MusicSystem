@@ -1,24 +1,17 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using MusicSystem.Data;
-using MusicSystem.Models;
 using MusicSystem.Models.Artists;
 using MusicSystem.Services;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MusicSystem.Controllers
 {
     public class ArtistsController : Controller
     {
-        private readonly MusicSystemDbContext data;
         private readonly IArtistService artists;
         private readonly IMapper mapper;
 
-        public ArtistsController(MusicSystemDbContext data,
-            IArtistService artists, IMapper mapper)
+        public ArtistsController(IArtistService artists, IMapper mapper)
         {
-            this.data = data;
             this.artists = artists;
             this.mapper = mapper;
         }
