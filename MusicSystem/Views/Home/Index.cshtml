@@ -51,7 +51,7 @@
 
 <div class="jumbotron d-none" id="statistics">
     <div class="row">
-        <h2 class="col-md-4 text-center" id="total-cars"></h2>
+        <h2 class="col-md-4 text-center" id="total-songs"></h2>
         <h2 class="col-md-4 text-center" id="total-users"></h2>
     </div>
 </div>
@@ -60,7 +60,7 @@
     <script>
         $('#statistics-button').on('click', ev => {
             $.get('/api/statistics', (data) => {
-                $('#total-cars').text(data.totalSongs + " Songs");
+                $('#total-songs').text(data.totalSongs + " Songs");
                 $('#total-users').text(data.totalUsers + " Users");
 
                 $('#statistics').removeClass('d-none');

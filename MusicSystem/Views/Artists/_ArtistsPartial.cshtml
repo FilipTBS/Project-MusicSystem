@@ -1,0 +1,15 @@
+﻿@model IEnumerable<ArtistServiceModel>
+
+<div class="row">
+    @foreach (var artist in Model)
+    {
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-subtitle">@artist.Name</h5>
+        <h6 class="card-genre">@artist.Genre</h6>
+        <a asp-controller="Artists" asp-action="ArtistSongs" asp-route-id="@artist.Id" class="btn btn-primary">Songs</a>
+        @if (User.IsAdmin())
+        {<a asp-controller="Artists" asp-action="Delete" asp-route-id="@artist.Id" class="btn btn-danger">Delete</a>}
+    </div>
+</div>}
+</div>
