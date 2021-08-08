@@ -23,8 +23,8 @@ namespace MusicSystem.Controllers
         {
             var userId = this.User.GetId();
 
-            var userIsAlreadyCurator = this.data.Curators
-                .Any(x => x.UserId == userId);
+            var userIsAlreadyCurator = this.data
+                .Curators.Any(d => d.UserId == userId);
 
             if (userIsAlreadyCurator)
             {

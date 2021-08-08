@@ -1,37 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Models;
-using MusicSystem.Models.Home;
 using System.Diagnostics;
 using System.Linq;
 using MusicSystem.Services.Songs;
-using MusicSystem.Services.Statistics;
+using Microsoft.Extensions.Caching.Memory;
+using System.Collections.Generic;
+using System;
 
 namespace MusicSystem.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ISongService songs;
-        private readonly IStatisticsService statistics;
+        private readonly IMemoryCache cache;
 
-        public HomeController(ISongService songs, 
-            IStatisticsService statistics)
+        public HomeController(ISongService songs, IMemoryCache cache)
         {
             this.songs = songs;
-            this.statistics = statistics;
+            this.cache = cache;
         }
 
         public IActionResult Index()
         {
-            var latestSongs = this.songs.Latest().ToList();
-
-            var totalStatistics = this.statistics.Total();
-
-            return View(new IndexViewModel
+            var latestSongs = this.cache
+                .Get<List<LatestSongServiceModel>>("LatestSongsCache");
+            if (latestSongs == null)
             {
-                TotalSongs = totalStatistics.TotalSongs,
-                TotalUsers = totalStatistics.TotalUsers,
-                Songs = latestSongs
-            });
+                latestSongs = this.songs.Latest().ToList();
+
+                var options = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+
+                this.cache.Set("LatestSongsCache", latestSongs, options);
+            }       
+
+            return View(latestSongs);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

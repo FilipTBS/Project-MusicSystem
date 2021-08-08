@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using MusicSystem.Infrastructure;
 using MusicSystem.Models.Songs;
 using MusicSystem.Services.Curators;
 using MusicSystem.Services.Songs;
+using System;
 
 namespace MusicSystem.Controllers
 {
@@ -13,13 +15,16 @@ namespace MusicSystem.Controllers
         private readonly ISongService songs;
         private readonly ICuratorService curators;
         private readonly IMapper mapper;
+        private readonly IMemoryCache cache;
 
         public SongsController(ISongService songs,
-            ICuratorService curators, IMapper mapper)
+            ICuratorService curators, IMapper mapper,
+            IMemoryCache cache)
         {
             this.songs = songs;
             this.curators = curators;
             this.mapper = mapper;
+            this.cache = cache;
         }
 
         [Authorize]
@@ -161,7 +166,17 @@ namespace MusicSystem.Controllers
         {
             var song = this.songs.GetLyrics(id);
 
-            var songLyrics = new SongLyricsViewModel
+            var songLyrics = this.cache
+            .Get<SongLyricsViewModel>("SongLyricsCache");
+            if (songLyrics == null)
+            {
+                var options = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+
+                this.cache.Set("SongLyricsCache", songLyrics, options);
+            }
+
+            songLyrics = new SongLyricsViewModel
             {
                 Id = id,
                 Lyrics = song.Lyrics
