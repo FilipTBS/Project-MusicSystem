@@ -1,5 +1,4 @@
 ﻿using MusicSystem.Models.Artists;
-using System.Collections.Generic;
 
 namespace MusicSystem.Services
 {

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Models.Artists;
 using MusicSystem.Services;
 
@@ -8,12 +7,10 @@ namespace MusicSystem.Controllers
     public class ArtistsController : Controller
     {
         private readonly IArtistService artists;
-        private readonly IMapper mapper;
 
-        public ArtistsController(IArtistService artists, IMapper mapper)
+        public ArtistsController(IArtistService artists)
         {
             this.artists = artists;
-            this.mapper = mapper;
         }
 
         public IActionResult Catalogue([FromQuery] CatalogueArtistsQueryModel query)

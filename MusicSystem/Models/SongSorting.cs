@@ -3,6 +3,5 @@
     public enum SongSorting
     {
         DateCreated = 0,
-        Likes = 1
     }
 }

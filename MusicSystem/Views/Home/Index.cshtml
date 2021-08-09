@@ -1,10 +1,10 @@
-﻿@model IndexViewModel
+﻿@model List<LatestSongServiceModel>
 
 @{
     ViewData["Title"] = "Welcome aboard!";
 }
 
-@if (!Model.Songs.Any())
+@if (!Model.Any())
 {
     <div class="jumbotron">
         <h1 class="display-4">Welcome to the top chart music system!</h1>
@@ -19,19 +19,18 @@
 <div class="mb-5"></div>
 @{
 
-    if (Model.Songs.Any() && Model.Songs.Count >= 3)
+    if (Model.Any() && Model.Count >= 3)
     {
         <label>Latest 3 added songs:</label>
 
         <div class="row">
-        @foreach (var song in Model.Songs)
+        @foreach (var song in Model)
         {
             <div class="card" style="max-width: 18rem;">
                 <div class="card-body">
                     <h5 class="card-subtitle">@song.ArtistName</h5>
                     <h5 class="card-title">@song.Title</h5>
                     <h6 class="card-genre">@song.Genre</h6>
-                    <h6 class="card-likes">Likes: @song.Likes</h6>
                     <a href="@song.SongUrl" class="card-link">Link here</a>
                     <a asp-controller="Songs" asp-action="Lyrics" asp-route-id="@song.Id" class="card-link">Lyrics here</a>
                 </div>

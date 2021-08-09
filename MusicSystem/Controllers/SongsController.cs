@@ -64,7 +64,7 @@ namespace MusicSystem.Controllers
                 return View(song);
             }
 
-            this.songs.Create(song.Title,
+            this.songs.Add(song.Title,
                 song.ArtistId,
                 song.Genre,
                 song.Lyrics,
@@ -156,8 +156,8 @@ namespace MusicSystem.Controllers
                 song.ArtistId,
                 song.Lyrics,
                 song.SongUrl,
-                song.Genre
-                );
+                song.Genre,
+                this.User.IsAdmin());
 
             return RedirectToAction(nameof(All));
         }

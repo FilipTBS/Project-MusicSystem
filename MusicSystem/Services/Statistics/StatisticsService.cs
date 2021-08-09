@@ -12,7 +12,7 @@ namespace MusicSystem.Services.Statistics
 
         public StatisticsServiceModel Total()
         {
-            var totalSongs = this.data.Songs.Count();
+            var totalSongs = this.data.Songs.Count(x => x.IsApproved);
             var totalUsers = this.data.Users.Count();
 
             return new StatisticsServiceModel

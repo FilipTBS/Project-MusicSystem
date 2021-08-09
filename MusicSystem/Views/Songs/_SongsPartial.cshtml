@@ -12,7 +12,8 @@
             <a asp-controller="Songs" asp-action="Lyrics" asp-route-id="@song.Id" class="btn btn-primary">Lyrics</a>
             @if (ViewBag.AllowSongEdit == true || User.IsAdmin())
             {
-        <a asp-controller="Songs" asp-action="Edit" asp-route-id="@song.Id" class="btn btn-warning">Edit</a>}   <a asp-controller="Songs" asp-action="Delete" asp-route-id="@song.Id" class="btn btn-danger">Delete</a>
+        <a asp-controller="Songs" asp-action="Edit" asp-route-id="@song.Id" class="btn btn-warning">Edit</a>}   
+        <a asp-controller="Songs" asp-action="Delete" asp-route-id="@song.Id" class="btn btn-danger">Delete</a>
         </div>
     </div>
     }

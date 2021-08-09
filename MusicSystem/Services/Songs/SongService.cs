@@ -19,7 +19,7 @@ namespace MusicSystem.Services.Songs
             this.mapper = mapper.ConfigurationProvider;
         }
 
-        public string Create(string title, string artistId,
+        public string Add(string title, string artistId,
         string genre, string lyrics,
         string songUrl, int curatorId)
         {
@@ -30,7 +30,8 @@ namespace MusicSystem.Services.Songs
                 Genre = genre,
                 Lyrics = lyrics,
                 SongUrl = songUrl,
-                CuratorId = curatorId
+                CuratorId = curatorId,
+                IsApproved = false
             };
 
             this.data.Songs.Add(songData);
@@ -39,14 +40,18 @@ namespace MusicSystem.Services.Songs
             return songData.Id;
         }
 
-        public SongQueryServiceModel All(string artist,
-            string searchTerm, SongSorting sorting,
-            int currentPage, int songsPerPage)
+        public SongQueryServiceModel All(string artist = null,
+            string searchTerm = null,
+            SongSorting sorting = SongSorting.DateCreated,
+            int currentPage = 1, 
+            int songsPerPage = 10, 
+            bool approvedOnly = true)
         {
-            var songsQuery = this.data.Songs.AsQueryable();
+            var songsQuery = this.data.Songs
+                .Where(x => !x.IsApproved || x.IsApproved);
 
-            //To check the filtering and search (also in Views -> Songs -> All)
-            /*
+           //To check the filtering and search (also in Views -> Songs -> All)
+           /*
            if (!string.IsNullOrWhiteSpace(query.Artist))
            {
                songsQuery = songsQuery.Where(x => x.Artist.Name == query.Artist);
@@ -74,8 +79,8 @@ namespace MusicSystem.Services.Songs
             };
         }
 
-        public SongLyricsServiceModel Lyrics(string songId)
-        => this.data.Songs
+    public SongLyricsServiceModel GetLyrics(string songId)
+    =>      this.data.Songs
                 .Where(c => c.Id == songId)
                 .Select(c => new SongLyricsServiceModel
                 {
@@ -83,9 +88,9 @@ namespace MusicSystem.Services.Songs
                     Lyrics = c.Lyrics
                 })
                 .FirstOrDefault();
-
-        public bool Edit(string songId, string title, 
-            string artistId, string lyrics, string songUrl, string genre)
+    public bool Edit(string songId, string title, 
+            string artistId, string lyrics, string songUrl, 
+            string genre, bool isApproved)
         {
             var songData = this.data.Songs.Find(songId);
 
@@ -99,9 +104,9 @@ namespace MusicSystem.Services.Songs
             songData.SongUrl = songUrl;
             songData.Lyrics = lyrics;
             songData.Genre = genre;
+            songData.IsApproved = isApproved;
 
             this.data.SaveChanges();
-
             return true;
         }
 
@@ -111,27 +116,25 @@ namespace MusicSystem.Services.Songs
                 .ProjectTo<SongInfoServiceModel>(this.mapper)
                 .FirstOrDefault();
 
-
         public IEnumerable<LatestSongServiceModel> Latest()
-        => this.data.Songs
+        => this.data.Songs.Where(x => x.IsApproved)
         .OrderByDescending(c => c.Id)
         .ProjectTo<LatestSongServiceModel>(this.mapper)
         .Take(3)
         .ToList();
 
-        private static IEnumerable<SongServiceModel> GetSongs(IQueryable<Song> songQuery)
-        => songQuery
-        .Select(s => new SongServiceModel
-        {
-              Id = s.Id,
-              Title = s.Title,
-              ArtistName = s.Artist.Name,
-              Genre = s.Genre,
-              Lyrics = s.Lyrics,
-              SongUrl = s.SongUrl,
-              Likes = s.Likes
+        private IEnumerable<SongServiceModel> GetSongs(IQueryable<Song> songQuery)
+        => songQuery.ProjectTo<SongServiceModel>(this.mapper)
+           .ToList();
 
-        }).ToList();
+        public void ChangeVisility(string songId)
+        {
+            var song = this.data.Songs.Find(songId);
+
+            song.IsApproved = !song.IsApproved;
+
+            this.data.SaveChanges();
+        }
 
         public IEnumerable<string> AllTitles()
          => this.data.Songs
@@ -140,18 +143,13 @@ namespace MusicSystem.Services.Songs
                 .OrderBy(x => x)
                 .ToList();
 
-        public IEnumerable<SongArtistModel> AllArtists()
+        public IEnumerable<SongArtistServiceModel> AllArtists()
         => this.data.Artists
-                .Select(c => new SongArtistModel
-                {
-                    Id = c.Id,
-                    Name = c.Name
-                })
-                .ToList();
-
+           .ProjectTo<SongArtistServiceModel>(this.mapper).ToList();
+        
         public bool ArtistExists(string artistId)
-        => this.data.Songs
-                .Any(c => c.Artist.Id == artistId);
+        => this.data.Artists
+                .Any(x => x.Id == artistId);
 
         public bool IsByCurator(string songId, int curatorId)
         => this.data.Songs
@@ -160,7 +158,6 @@ namespace MusicSystem.Services.Songs
         public IEnumerable<SongServiceModel> ByUser(string userId)
         => GetSongs(this.data.Songs
                 .Where(c => c.Curator.UserId == userId));
-
 
     }
 

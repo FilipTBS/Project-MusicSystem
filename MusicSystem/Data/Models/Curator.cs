@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using MusicSystem.Data.Models;
+﻿using MusicSystem.Data.Models;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using static MusicSystem.Data.Constants.Curator;

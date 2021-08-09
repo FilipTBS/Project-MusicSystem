@@ -4,6 +4,7 @@ using MusicSystem.Data;
 using MusicSystem.Infrastructure;
 using MusicSystem.Models.Curators;
 using System.Linq;
+using static MusicSystem.WebConstants;
 
 namespace MusicSystem.Controllers
 {
@@ -45,6 +46,8 @@ namespace MusicSystem.Controllers
 
             this.data.Curators.Add(curatorObject);
             this.data.SaveChanges();
+
+            TempData[GlobalMessageKey] = "Thank you for becoming a Curator!";
 
             return RedirectToAction("All", "Songs");
         }

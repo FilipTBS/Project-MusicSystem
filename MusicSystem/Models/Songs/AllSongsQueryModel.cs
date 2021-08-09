@@ -18,7 +18,7 @@ namespace MusicSystem.Models.Songs
 
         public SongSorting Sorting { get; init; }
 
-        public IEnumerable<SongArtistModel> Artists { get; set; }
+        public IEnumerable<SongArtistServiceModel> Artists { get; set; }
 
         public IEnumerable<SongServiceModel> Songs { get; set; }
     }

@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MusicSystem.Data;
+﻿using MusicSystem.Data;
 using MusicSystem.Data.Models;
-using MusicSystem.Models;
 using MusicSystem.Models.Artists;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +9,10 @@ namespace MusicSystem.Services.Artists
     public class ArtistService : IArtistService
     {
         private readonly MusicSystemDbContext data;
-        private readonly IConfigurationProvider mapper;
 
-        public ArtistService(MusicSystemDbContext data, IMapper mapper)
+        public ArtistService(MusicSystemDbContext data)
         {
             this.data = data;
-            this.mapper = mapper.ConfigurationProvider;
         }
 
         public ArtistQueryServiceModel Catalogue(string artist,

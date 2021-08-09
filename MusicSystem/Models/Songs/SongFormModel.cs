@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MusicSystem.Services.Songs;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using static MusicSystem.Data.Constants.Song;
 
@@ -12,7 +13,7 @@ namespace MusicSystem.Models.Songs
         [Display(Name = "Artist")]
         public string ArtistId { get; set; }
 
-        public IEnumerable<SongArtistModel> Artists { get; set; }
+        public IEnumerable<SongArtistServiceModel> Artists { get; set; }
 
         [Required, StringLength(SongGenreMaxValue, MinimumLength = SongGenreMinValue)]
         public string Genre { get; init; }

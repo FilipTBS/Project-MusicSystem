@@ -5,18 +5,19 @@ namespace MusicSystem.Services.Songs
 {
     public interface ISongService
     {
-        SongQueryServiceModel All(string artist,
-                                 string searchTerm,
-                                 SongSorting sorting,
-                                 int currentPage,
-                                 int songsPerPage);
+        SongQueryServiceModel All(string artist = null,
+                                 string searchTerm = null,
+                                 SongSorting sorting = SongSorting.DateCreated,
+                                 int currentPage = 1,
+                                 int songsPerPage = 10,
+                                 bool approvedOnly = true);
 
-        SongLyricsServiceModel Lyrics(string songId);
+        SongLyricsServiceModel GetLyrics(string songId);
         SongInfoServiceModel GetSongInfo(string songId);
 
         IEnumerable<LatestSongServiceModel> Latest();
 
-        string Create(
+        string Add(
             string title,
             string artistId,
             string genre,
@@ -30,13 +31,16 @@ namespace MusicSystem.Services.Songs
             string artistId,
             string lyrics,
             string songUrl,
-            string genre);
+            string genre,
+            bool isApproved);
+
+        public void ChangeVisility(string songId);
 
         IEnumerable<SongServiceModel> ByUser(string userId);
 
         bool IsByCurator(string songId, int curatorId);
 
-        IEnumerable<SongArtistModel> AllArtists();
+        IEnumerable<SongArtistServiceModel> AllArtists();
 
         bool ArtistExists(string artistId);
     }

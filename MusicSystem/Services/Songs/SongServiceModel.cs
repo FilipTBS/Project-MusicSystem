@@ -14,7 +14,7 @@
 
         public string Lyrics { get; init; }
 
-        public int Likes { get; set; }
+        public bool IsApproved { get; init; }
 
     }
 }

@@ -26,7 +26,7 @@
     </div>
 
     @{ var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
-                                                       !Model.Artists.Any(); }
+                                                        !Model.Artists.Any(); }
 
     <div class="col-md-6">
         <a class="btn btn-primary float-sm-right @(shouldButtonBeDisabled ? "disabled" : string.Empty)" style="margin-top: 10px"
@@ -44,6 +44,7 @@
 }
 
 <partial name="_ArtistsPartial" model="@Model.Artists" />
+
 
 
 

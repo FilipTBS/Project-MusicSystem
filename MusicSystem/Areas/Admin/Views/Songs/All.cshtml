@@ -1,0 +1,37 @@
+﻿@model IEnumerable<SongServiceModel>
+
+@{ 
+    ViewBag.Title = "Songs Admin page";
+}
+
+<h1>All Songs</h1>
+
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">ArtistName</th>
+            <th scope="col">Title</th>
+            <th scope="col">Genre</th>
+            <th scope="col">Visible</th>
+            <th scope="col">Lyrics</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var song in Model)
+        {
+        <tr>
+            <td scope="col">@song.ArtistName</td>
+            <td scope="col">@song.Title</td>
+            <td scope="col">@song.Genre</td>
+
+            <td scope="col">@(song.IsApproved ? "Yes" : "No")</td>
+            <td scope="col">
+                <a asp-area="" asp-controller="Songs" asp-action="Lyrics" asp-route-id="@song.Id" class="btn btn-info ml-0">Lyrics</a>
+                <a href="@song.SongUrl" class="btn btn-info ml-5">Link</a>
+                <a asp-area="" asp-controller="Songs" asp-action="Delete" asp-route-id="@song.Id" class="btn btn-danger float-right ml-3">Delete</a>
+                <a asp-area="" asp-controller="Songs" asp-action="Edit" asp-route-id="@song.Id" class="btn btn-warning float-right ml-3">Edit</a>
+                <a asp-area="Admin" asp-controller="Songs" asp-action="ChangeVisibility" asp-route-id="@song.Id" class="btn btn-info float-right ml-3">@(song.IsApproved ? "Hide" : "Show")</a>
+            </td>
+        </tr>}
+    </tbody>
+</table>
