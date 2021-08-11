@@ -1,16 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MusicSystem.Infrastructure;
 using MusicSystem.Models.Artists;
 using MusicSystem.Services;
+using MusicSystem.Services.Partners;
+using System.Collections.Generic;
+using static MusicSystem.Constants;
 
 namespace MusicSystem.Controllers
 {
     public class ArtistsController : Controller
     {
         private readonly IArtistService artists;
+        private readonly IPartnerService partners;
 
-        public ArtistsController(IArtistService artists)
+        public ArtistsController(IArtistService artists, IPartnerService partners)
         {
             this.artists = artists;
+            this.partners = partners;
         }
 
         public IActionResult Catalogue([FromQuery] CatalogueArtistsQueryModel query)
@@ -32,6 +39,45 @@ namespace MusicSystem.Controllers
             var artist = artists.GetArtistSongs(id);
 
             return View(artist);
+        }
+
+        [Authorize]
+        public IActionResult Add()
+        {
+            if (!this.partners.IsPartner(this.User.GetId()))
+            {
+                return RedirectToAction(nameof(PartnersController.Become), "Partners");
+            }
+
+            return View(new AddArtistFormModel {});
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Add(AddArtistFormModel artist)
+        {
+            var partnerId = this.partners.IdByUser(this.User.GetId());
+
+            if (partnerId == null)
+            {
+                return RedirectToAction(nameof(PartnersController.Become), "Partners");
+            }
+
+            if (this.artists.Exists(artist.Name))
+            {
+                this.ModelState.AddModelError(nameof(artist.Name), "Artist with this name already exists");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(artist);
+            }
+
+            this.artists.Add(artist.Name,artist.Genre, artist.Songs);
+
+            TempData[GlobalMessageKey] = "You added an Artist!";
+
+            return RedirectToAction(nameof(Catalogue));
         }
     }
 }

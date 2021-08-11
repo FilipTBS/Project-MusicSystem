@@ -4,7 +4,7 @@ using MusicSystem.Data;
 using MusicSystem.Infrastructure;
 using MusicSystem.Models.Curators;
 using System.Linq;
-using static MusicSystem.WebConstants;
+using static MusicSystem.Constants;
 
 namespace MusicSystem.Controllers
 {

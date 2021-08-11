@@ -1,22 +1,21 @@
 ﻿using MusicSystem.Data;
-using MusicSystem.Services.Curators;
 using System.Linq;
 
-namespace MusicSystem.Services
+namespace MusicSystem.Services.Partners
 {
-    public class CuratorService : ICuratorService
+    public class PartnerService : IPartnerService
     {
         private readonly MusicSystemDbContext data;
 
-        public CuratorService(MusicSystemDbContext data)
+        public PartnerService(MusicSystemDbContext data)
             => this.data = data;
 
-        public bool IsCurator(string userId)
-            => this.data.Curators
+        public bool IsPartner(string userId)
+            => this.data.Partners
                 .Any(x => x.UserId == userId);
 
         public string IdByUser(string userId)
-            => this.data.Curators
+            => this.data.Partners
                 .Where(x => x.UserId == userId)
                 .Select(x => x.Id)
                 .FirstOrDefault();

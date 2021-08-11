@@ -4,17 +4,21 @@
     ViewData["Title"] = "Welcome aboard!";
 }
 
-@if (!Model.Any())
-{
-    <div class="jumbotron">
-        <h1 class="display-4">Welcome to the top chart music system!</h1>
-        <p class="lead">So far there are no songs available, so just start adding some</p>
+
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to the top chart music system!</h1>
+    @if (!Model.Any())
+    {
+        <p class="lead">So far there are no songs available</p>
+        <p class="lead">So add at least 3 songs so some would appear</p>
         <hr class="my-4">
         <p class="lead">
             <a asp-controller="Songs" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add Song</a>
         </p>
-    </div>
-}
+    }
+
+</div>
+
 
 <div class="mb-5"></div>
 @{
@@ -52,6 +56,7 @@
     <div class="row">
         <h2 class="col-md-4 text-center" id="total-songs"></h2>
         <h2 class="col-md-4 text-center" id="total-users"></h2>
+        <h2 class="col-md-4 text-center" id="total-artists"></h2>
     </div>
 </div>
 
@@ -61,6 +66,7 @@
             $.get('/api/statistics', (data) => {
                 $('#total-songs').text(data.totalSongs + " Songs");
                 $('#total-users').text(data.totalUsers + " Users");
+                $('#total-artists').text(data.totalArtists + " Artists");
 
                 $('#statistics').removeClass('d-none');
                 $('#statistics-button').hide();

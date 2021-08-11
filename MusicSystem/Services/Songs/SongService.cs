@@ -21,7 +21,7 @@ namespace MusicSystem.Services.Songs
 
         public string Add(string title, string artistId,
         string genre, string lyrics,
-        string songUrl, int curatorId)
+        string songUrl, string curatorId)
         {
             var songData = new Song
             {
@@ -110,6 +110,18 @@ namespace MusicSystem.Services.Songs
             return true;
         }
 
+        public void Delete(string songId)
+        {
+            var song = this.data.Songs.Find(songId);
+
+            if (song != null)
+            {
+                this.data.Songs.Remove(song);
+
+                this.data.SaveChanges();
+            }       
+        }
+
         public SongInfoServiceModel GetSongInfo(string songId)
         => this.data.Songs
                 .Where(c => c.Id == songId)
@@ -151,9 +163,8 @@ namespace MusicSystem.Services.Songs
         => this.data.Artists
                 .Any(x => x.Id == artistId);
 
-        public bool IsByCurator(string songId, int curatorId)
-        => this.data.Songs
-                .Any(c => c.Id == songId && c.CuratorId == curatorId);
+        public bool IsByCurator(string songId, string curatorId)
+            => this.data.Songs.Any(c => c.Id == songId && c.CuratorId == curatorId);
 
         public IEnumerable<SongServiceModel> ByUser(string userId)
         => GetSongs(this.data.Songs

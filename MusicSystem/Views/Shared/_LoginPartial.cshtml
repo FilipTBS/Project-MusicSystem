@@ -4,15 +4,17 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 @inject ICuratorService Curators
+@inject IPartnerService Partners
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
         var userId = User.GetId();
-        var userIsDealer = Curators.IsCurator(userId);
+        var userIsCurator = Curators.IsCurator(userId);
         var userIsAdmin = User.IsAdmin();
+        var userIsPartner = Partners.IsPartner(userId);
 
-        @if (userIsDealer && !userIsAdmin)
+        @if (userIsCurator && !userIsAdmin)
         {
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="" asp-controller="Songs" asp-action="Mine">My Songs</a>
@@ -23,6 +25,12 @@
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="" asp-controller="Curators" asp-action="Become">Become a Curator</a>
             </li>
+            @if (!userIsPartner && !userIsCurator)
+            {
+                 <li class="nav-item">
+                 <a class="nav-link text-dark" asp-area="" asp-controller="Partners" asp-action="Become">Become a Partner</a>
+                 </li>
+            }
         }
         else if (userIsAdmin)
         {

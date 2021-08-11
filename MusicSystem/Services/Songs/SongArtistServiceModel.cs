@@ -1,6 +1,4 @@
-﻿using MusicSystem.Models.Songs;
-
-namespace MusicSystem.Services.Songs
+﻿namespace MusicSystem.Services.Songs
 {
     public class SongArtistServiceModel
     {

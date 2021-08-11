@@ -1,4 +1,6 @@
-﻿using MusicSystem.Models.Artists;
+﻿using MusicSystem.Data.Models;
+using MusicSystem.Models.Artists;
+using System.Collections.Generic;
 
 namespace MusicSystem.Services
 {
@@ -10,5 +12,9 @@ namespace MusicSystem.Services
                                  int artistsPerPage);
 
         public ArtistSongsViewModel GetArtistSongs(string id);
+
+        public bool Exists(string name);
+
+        public string Add(string name, string genre, ICollection<Song> songs);
     }
 }

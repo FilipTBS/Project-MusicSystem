@@ -6,5 +6,7 @@
 
         public int TotalUsers { get; init; }
 
+        public int TotalArtists { get; init; }
+
     }
 }

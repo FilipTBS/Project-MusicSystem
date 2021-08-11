@@ -7,6 +7,7 @@ using MusicSystem.Models.Songs;
 using MusicSystem.Services.Curators;
 using MusicSystem.Services.Songs;
 using System;
+using static MusicSystem.Constants;
 
 namespace MusicSystem.Controllers
 {
@@ -47,7 +48,7 @@ namespace MusicSystem.Controllers
         {
             var curatorId = this.curators.IdByUser(this.User.GetId());
 
-            if (curatorId == 0)
+            if (curatorId == null)
             {
                 return RedirectToAction(nameof(CuratorsController.Become), "Curators");
             }
@@ -70,6 +71,8 @@ namespace MusicSystem.Controllers
                 song.Lyrics,
                 song.SongUrl,
                 curatorId);
+
+            TempData[GlobalMessageKey] = "Song added and is awaiting for approval!";
 
             return RedirectToAction(nameof(All));
         }
@@ -128,7 +131,7 @@ namespace MusicSystem.Controllers
         {
             var curatorId = this.curators.IdByUser(this.User.GetId());
 
-            if (curatorId == 0 && !User.IsAdmin())
+            if (curatorId == null && !User.IsAdmin())
             {
                 return RedirectToAction(nameof(CuratorsController.Become), "Curators");
             }
@@ -159,7 +162,30 @@ namespace MusicSystem.Controllers
                 song.Genre,
                 this.User.IsAdmin());
 
+            TempData[GlobalMessageKey] = $"Song edited{(this.User.IsAdmin() ? string.Empty : " and is awaiting for approval")}!";
+
             return RedirectToAction(nameof(All));
+        }
+
+        [Authorize]
+        public IActionResult Delete(string id)
+        {
+            var curatorId = this.curators.IdByUser(this.User.GetId());
+
+            if (curatorId == null && !User.IsAdmin())
+            {
+                return RedirectToAction(nameof(CuratorsController.Become), "Curators");
+            }
+
+            if (!this.songs.IsByCurator(id, curatorId))
+            {
+                return Unauthorized();
+            }
+
+            this.songs.Delete(id);
+            TempData[GlobalMessageKey] = $"Your song was deleted!";
+
+            return RedirectToAction(nameof(Mine));
         }
 
         public IActionResult Lyrics(string id)

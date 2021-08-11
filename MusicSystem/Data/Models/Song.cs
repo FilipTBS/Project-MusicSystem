@@ -26,7 +26,7 @@ namespace MusicSystem.Data.Models
         [Required]
         public string SongUrl { get; set; }
 
-        public int CuratorId { get; init; }
+        public string CuratorId { get; init; }
 
         public Curator Curator { get; init; }
 

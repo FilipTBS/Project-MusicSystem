@@ -1,4 +1,5 @@
 ﻿using MusicSystem.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using static MusicSystem.Data.Constants.Curator;
@@ -7,7 +8,7 @@ namespace MusicSystem.Data
 {
     public class Curator
     {
-        public int Id { get; init; }
+        public string Id { get; init; } = Guid.NewGuid().ToString();
 
         [Required, MaxLength(CuratorNameMaxValue)]
         public string Name { get; set; }

@@ -16,7 +16,7 @@ namespace MusicSystem.Services.Artists
         }
 
         public ArtistQueryServiceModel Catalogue(string artist,
-            string searchTerm,int currentPage, int artistsPerPage)
+            string searchTerm, int currentPage, int artistsPerPage)
         {
             var artistsQuery = this.data.Artists.AsQueryable();
             var totalArtists = artistsQuery.Count();
@@ -54,14 +54,24 @@ namespace MusicSystem.Services.Artists
             };
             return artistSongs;      
         }
-        /* var artist = this.data.Artists.Where(x => x.Id == id).First();
 
-            var songTitles = artist.Songs.Select(x => x.Title);
+        public bool Exists(string name)
+        => this.data.Artists
+        .Any(x => x.Name == name);
 
-            var artistSongs = new ArtistSongsViewModel
+        public string Add(string name, string genre, ICollection<Song> songs)
+        {
+            var artistData = new Artist
             {
-                Id = id,
-                SongTitles = songTitles
-            };*/
+                Name = name,
+                Genre = genre,
+                Songs = songs       
+            };
+
+            this.data.Artists.Add(artistData);
+            this.data.SaveChanges();
+
+            return artistData.Id;
+        }
     }
 }

@@ -14,11 +14,13 @@ namespace MusicSystem.Services.Statistics
         {
             var totalSongs = this.data.Songs.Count(x => x.IsApproved);
             var totalUsers = this.data.Users.Count();
+            var totalArtists = this.data.Artists.Count();
 
             return new StatisticsServiceModel
             {
                 TotalSongs = totalSongs,
-                TotalUsers = totalUsers
+                TotalUsers = totalUsers,
+                TotalArtists = totalArtists
             };
         }
     }

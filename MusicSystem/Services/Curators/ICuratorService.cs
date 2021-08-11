@@ -4,6 +4,6 @@
     {
         public bool IsCurator(string userId);
 
-        public int IdByUser(string userId);
+        public string IdByUser(string userId);
     }
 }

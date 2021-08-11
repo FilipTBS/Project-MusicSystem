@@ -7,8 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MusicSystem.Data;
 using MusicSystem.Data.Models;
-
-using static MusicSystem.WebConstants;
+using static MusicSystem.Areas.Admin.AdminConstants;
 
 namespace MusicSystem.Infrastructure
 {

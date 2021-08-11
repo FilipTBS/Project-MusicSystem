@@ -23,7 +23,7 @@ namespace MusicSystem.Services.Songs
             string genre,
             string lyrics,
             string songUrl,
-            int curatorId);
+            string curatorId);
 
         bool Edit(
             string songId,
@@ -34,11 +34,13 @@ namespace MusicSystem.Services.Songs
             string genre,
             bool isApproved);
 
+        public void Delete(string songId);
+
         public void ChangeVisility(string songId);
 
         IEnumerable<SongServiceModel> ByUser(string userId);
 
-        bool IsByCurator(string songId, int curatorId);
+        bool IsByCurator(string songId, string curatorId);
 
         IEnumerable<SongArtistServiceModel> AllArtists();
 

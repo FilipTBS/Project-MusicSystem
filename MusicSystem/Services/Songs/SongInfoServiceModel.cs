@@ -4,7 +4,7 @@
     {
         public string ArtistId { get; init; }
 
-        public int CuratorId { get; init; }
+        public string CuratorId { get; init; }
 
         public string CuratorName { get; init; }
 
