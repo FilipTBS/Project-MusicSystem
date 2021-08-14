@@ -13,7 +13,7 @@ namespace MusicSystem.Models.Songs
 
         public int TotalSongs { get; set; }
 
-        [Display(Name = "Search by text")]
+        [Display(Name = "Search by Artist name")]
         public string SearchTerm { get; init; }
 
         public SongSorting Sorting { get; init; }

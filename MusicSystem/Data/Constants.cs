@@ -46,10 +46,9 @@
             public const int CompanyNameMaxValue = 50;
         }
 
-        public class Partner
+        public class Partner : Company
         {
-            public const int CompanyNameMinValue = 4;
-            public const int CompanyNameMaxValue = 50;
+            
         }
     }
 }

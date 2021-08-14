@@ -4,7 +4,6 @@ using MusicSystem.Infrastructure;
 using MusicSystem.Models.Artists;
 using MusicSystem.Services;
 using MusicSystem.Services.Partners;
-using System.Collections.Generic;
 using static MusicSystem.Constants;
 
 namespace MusicSystem.Controllers
@@ -53,7 +52,6 @@ namespace MusicSystem.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public IActionResult Add(AddArtistFormModel artist)
         {
             var partnerId = this.partners.IdByUser(this.User.GetId());

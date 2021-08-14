@@ -59,6 +59,10 @@ namespace MusicSystem.Services.Artists
         => this.data.Artists
         .Any(x => x.Name == name);
 
+        public Artist FindArtist(string name)
+         => this.data.Artists
+         .FirstOrDefault(x => x.Name == name);
+
         public string Add(string name, string genre, ICollection<Song> songs)
         {
             var artistData = new Artist
@@ -72,6 +76,18 @@ namespace MusicSystem.Services.Artists
             this.data.SaveChanges();
 
             return artistData.Id;
+        }
+
+        public void Delete(string name)
+        {
+            var artistName = this.data.Artists.Where(x => x.Name == name).FirstOrDefault();
+
+            if (artistName != null)
+            {
+                this.data.Artists.Remove(artistName);
+
+                this.data.SaveChanges();
+            }
         }
     }
 }

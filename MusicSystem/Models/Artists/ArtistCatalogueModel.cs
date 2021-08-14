@@ -10,7 +10,8 @@ namespace MusicSystem.Models
 
         public string Genre { get; set; }
 
-        public ICollection<Song> Songs { get; set; } = new List<Song>();
+        public ICollection<Song> Songs { get; set; } 
+        = new List<Song>();
 
     }
 }

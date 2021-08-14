@@ -1,10 +1,10 @@
 ﻿using MusicSystem.Data;
 using MusicSystem.Data.Models;
-using MusicSystem.Models.Songs;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace MusicSystem.Services.Songs
 {
@@ -21,7 +21,7 @@ namespace MusicSystem.Services.Songs
 
         public string Add(string title, string artistId,
         string genre, string lyrics,
-        string songUrl, string curatorId)
+        string songUrl, string curatorId, bool isApproved)
         {
             var songData = new Song
             {
@@ -31,7 +31,7 @@ namespace MusicSystem.Services.Songs
                 Lyrics = lyrics,
                 SongUrl = songUrl,
                 CuratorId = curatorId,
-                IsApproved = false
+                IsApproved = isApproved
             };
 
             this.data.Songs.Add(songData);
@@ -42,27 +42,27 @@ namespace MusicSystem.Services.Songs
 
         public SongQueryServiceModel All(string artist = null,
             string searchTerm = null,
-            SongSorting sorting = SongSorting.DateCreated,
             int currentPage = 1, 
             int songsPerPage = 10, 
             bool approvedOnly = true)
         {
-            var songsQuery = this.data.Songs
+            var songsQuery = this.data.Songs.Include(x => x.Artist)
                 .Where(x => !x.IsApproved || x.IsApproved);
 
-           //To check the filtering and search (also in Views -> Songs -> All)
-           /*
-           if (!string.IsNullOrWhiteSpace(query.Artist))
-           {
-               songsQuery = songsQuery.Where(x => x.Artist.Name == query.Artist);
-           }
-           if (!string.IsNullOrWhiteSpace(query.SearchTerm))
-           {
-               songsQuery = songsQuery
-                   .Where(x => 
-                   (x.Artist.Name + " " + x.Title).ToLower()
-                   .Contains(query.SearchTerm.ToLower()));
-           }*/
+            if (!string.IsNullOrWhiteSpace(artist))
+            {
+                songsQuery = songsQuery.Where(c => c.Artist.Name == artist);
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                songsQuery = songsQuery.Where(c =>
+                    (c.Artist.Name + " " + c.Title).ToLower()
+                    .Contains(searchTerm.ToLower()) ||
+                    c.Genre.ToLower().Contains(searchTerm.ToLower()));
+            }
+
+            songsQuery = songsQuery.OrderByDescending(c => c.Id);
 
             var totalSongs = songsQuery.Count();
 
@@ -132,8 +132,7 @@ namespace MusicSystem.Services.Songs
         => this.data.Songs.Where(x => x.IsApproved)
         .OrderByDescending(c => c.Id)
         .ProjectTo<LatestSongServiceModel>(this.mapper)
-        .Take(3)
-        .ToList();
+        .Take(3).ToList();
 
         private IEnumerable<SongServiceModel> GetSongs(IQueryable<Song> songQuery)
         => songQuery.ProjectTo<SongServiceModel>(this.mapper)
@@ -147,13 +146,6 @@ namespace MusicSystem.Services.Songs
 
             this.data.SaveChanges();
         }
-
-        public IEnumerable<string> AllTitles()
-         => this.data.Songs
-                .Select(x => x.Title)
-                .Distinct()
-                .OrderBy(x => x)
-                .ToList();
 
         public IEnumerable<SongArtistServiceModel> AllArtists()
         => this.data.Artists

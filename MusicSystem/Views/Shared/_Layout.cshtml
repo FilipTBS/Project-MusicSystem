@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using MusicSystem.Data.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@inject ICuratorService Curators
+@inject IPartnerService Partners
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -20,15 +27,24 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (!User.IsAdmin())
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Songs" asp-action="Add">Add Song</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Artists" asp-action="Add">Add Artist</a>
-                            </li>
-
-                        }
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                var userIsCurator = Curators.IsCurator(User.GetId());
+                                var userIsPartner = Partners.IsPartner(User.GetId());
+                                @if (userIsCurator)
+                                {
+                                  <li class="nav-item">
+                                       <a class="nav-link text-dark" asp-area="" asp-controller="Songs" asp-action="Add">Add Song</a>
+                                    </li>
+                                }
+                                @if (userIsPartner)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Artists" asp-action="Add">Add Artist</a>
+                                    </li>
+                                }
+                            }
+                        }                            
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Songs" asp-action="All">All Songs</a>
                         </li>
@@ -44,9 +60,9 @@
     <div class="container">
         @if (TempData.ContainsKey(Constants.GlobalMessageKey))
         {
-    <div class="alert alert-success text-center" role="alert">
-        @TempData[Constants.GlobalMessageKey]
-    </div>}
+<div class="alert alert-success text-center" role="alert">
+    @TempData[Constants.GlobalMessageKey]
+</div>}
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

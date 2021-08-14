@@ -51,7 +51,7 @@ namespace MusicSystem.Controllers
 
             TempData[GlobalMessageKey] = "Thank you for becoming a Partner!";
 
-            return RedirectToAction("AddArtist", "Artists");
+            return RedirectToAction("Add", "Artists");
         }
 
     }

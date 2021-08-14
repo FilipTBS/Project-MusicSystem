@@ -43,7 +43,6 @@ namespace MusicSystem.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public IActionResult Add(SongFormModel song)
         {
             var curatorId = this.curators.IdByUser(this.User.GetId());
@@ -70,9 +69,10 @@ namespace MusicSystem.Controllers
                 song.Genre,
                 song.Lyrics,
                 song.SongUrl,
-                curatorId);
+                curatorId,
+                this.User.IsAdmin());
 
-            TempData[GlobalMessageKey] = "Song added and is awaiting for approval!";
+            TempData[GlobalMessageKey] = "You added a song and is awaiting for approval!";
 
             return RedirectToAction(nameof(All));
         }
@@ -82,7 +82,6 @@ namespace MusicSystem.Controllers
             var queryResult = this.songs.All(
                 query.Artist,
                 query.SearchTerm,
-                query.Sorting,
                 query.CurrentPage,
                 AllSongsQueryModel.SongsPerPage);
 

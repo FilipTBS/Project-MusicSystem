@@ -13,7 +13,7 @@ namespace MusicSystem.Models.Artists
 
         public int TotalArtists { get; set; }
 
-        [Display(Name = "Search by text")]
+        [Display(Name = "Search by Artist name")]
         public string SearchTerm { get; init; }
 
         public IEnumerable<ArtistSongsViewModel> Songs { get; set; }

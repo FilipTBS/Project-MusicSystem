@@ -16,5 +16,9 @@ namespace MusicSystem.Services
         public bool Exists(string name);
 
         public string Add(string name, string genre, ICollection<Song> songs);
+
+        public void Delete(string name);
+
+        public Artist FindArtist(string name);
     }
 }

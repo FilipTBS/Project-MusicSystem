@@ -1,0 +1,44 @@
+﻿@model SongFormModel
+
+<div class="container">
+    <div class="row">
+        <div class="offset-md-2 col-md-8 col-sm-12">
+            <h2 class="text-center">@ViewBag.Title</h2>
+            <form method="post">
+                <div class="form-group">
+                    <label asp-for="Title"></label>
+                    <input asp-for="Title" class="form-control" placeholder="The song's title">
+                    <span asp-validation-for="Title" class="small text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ArtistId"></label>
+                    <select asp-for="ArtistId" class="form-control">
+                        @foreach (var artist in Model.Artists)
+                        {
+                            <option value="@artist.Id">@artist.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Genre"></label>
+                    <input asp-for="Genre" class="form-control" placeholder="The song's genre">
+                    <span asp-validation-for="Genre" class="small text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Lyrics"></label>
+                    <textarea asp-for="Lyrics" rows="10" class="form-control" placeholder="The song's lyrics"></textarea>
+                    <span asp-validation-for="Lyrics" class="small text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SongUrl"></label>
+                    <input asp-for="SongUrl" class="form-control" placeholder="The song's url">
+                    <span asp-validation-for="SongUrl" class="small text-danger"></span>
+                </div>
+
+                <input class="btn btn-primary" type="submit" value="Save" />
+            </form>
+        </div>
+    </div>
+</div>

@@ -3,7 +3,7 @@ using MusicSystem.Data.Models;
 using MusicSystem.Models.Songs;
 using MusicSystem.Services.Songs;
 
-namespace CarRentingSystem.Infrastructure
+namespace MusicSystem.Infrastructure
 {
     public class MappingProfile : Profile
     {

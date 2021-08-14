@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static MusicSystem.Data.Constants.Partner;
+using static MusicSystem.Data.Constants.Company;
 
 namespace MusicSystem.Models.Partners
 {
@@ -14,8 +14,7 @@ namespace MusicSystem.Models.Partners
         [EmailAddress]
         public string BusinessEmail { get; set; }
 
-        [Required]
-        [Url]
+        [Required, Url]
         public string Website { get; set; }
     }
 }

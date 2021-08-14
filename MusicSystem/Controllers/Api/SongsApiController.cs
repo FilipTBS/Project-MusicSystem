@@ -18,7 +18,6 @@ namespace MusicSystem.Controllers.Api
             => this.songs.All(
                 query.Artist,
                 query.SearchTerm,
-                query.Sorting,
                 query.CurrentPage,
                 query.SongsPerPage);
     }

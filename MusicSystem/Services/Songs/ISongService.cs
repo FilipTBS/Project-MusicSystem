@@ -7,7 +7,6 @@ namespace MusicSystem.Services.Songs
     {
         SongQueryServiceModel All(string artist = null,
                                  string searchTerm = null,
-                                 SongSorting sorting = SongSorting.DateCreated,
                                  int currentPage = 1,
                                  int songsPerPage = 10,
                                  bool approvedOnly = true);
@@ -23,7 +22,8 @@ namespace MusicSystem.Services.Songs
             string genre,
             string lyrics,
             string songUrl,
-            string curatorId);
+            string curatorId, 
+            bool isApproved);
 
         bool Edit(
             string songId,

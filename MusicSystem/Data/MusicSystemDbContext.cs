@@ -9,7 +9,6 @@ namespace MusicSystem.Data
         public DbSet<Artist> Artists { get; set; }
         public DbSet<Song> Songs { get; set; }
         public DbSet<Curator> Curators { get; set; }
-
         public DbSet<Partner> Partners { get; set; }
 
         public MusicSystemDbContext(DbContextOptions<MusicSystemDbContext> options)
@@ -37,6 +36,12 @@ namespace MusicSystem.Data
                 .WithOne()
                 .HasForeignKey<Curator>(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Artist>()
+           .HasMany(x => x.Songs)
+           .WithOne(x => x.Artist)
+           .HasForeignKey(x => x.ArtistId)
+           .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(builder);
         }
