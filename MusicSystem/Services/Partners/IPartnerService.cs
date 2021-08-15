@@ -2,6 +2,9 @@
 {
     public interface IPartnerService
     {
+        public string Add(string companyName, string businessEmail,
+            string website, string userId);
+
         public bool IsPartner(string userId);
 
         public string IdByUser(string userId);

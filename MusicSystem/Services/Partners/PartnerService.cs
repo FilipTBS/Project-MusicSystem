@@ -1,4 +1,5 @@
 ﻿using MusicSystem.Data;
+using MusicSystem.Data.Models;
 using System.Linq;
 
 namespace MusicSystem.Services.Partners
@@ -10,9 +11,27 @@ namespace MusicSystem.Services.Partners
         public PartnerService(MusicSystemDbContext data)
             => this.data = data;
 
+        public string Add(string companyName, string businessEmail, 
+            string website, string userId)
+        {
+            var partnerObject = new Partner
+            {
+                Name = companyName,
+                BusinessEmail = businessEmail,
+                Website = website,
+                UserId = userId
+            };
+
+            this.data.Partners.Add(partnerObject);
+            this.data.SaveChanges();
+
+            return partnerObject.Id;
+        }
+
         public bool IsPartner(string userId)
             => this.data.Partners
                 .Any(x => x.UserId == userId);
+        //.Partners.Any(d => d.UserId == userId);
 
         public string IdByUser(string userId)
             => this.data.Partners

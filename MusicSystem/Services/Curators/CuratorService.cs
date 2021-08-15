@@ -12,9 +12,25 @@ namespace MusicSystem.Services
         public CuratorService(MusicSystemDbContext data)
             => this.data = data;
 
+        public string Add(string nickname, string email, string userId)
+        {
+            var curatorObject = new Data.Curator
+            {
+                Nickname = nickname,
+                Email = email,
+                UserId = userId
+            };
+
+            this.data.Curators.Add(curatorObject);
+            this.data.SaveChanges();
+
+            return curatorObject.Id;
+        }
+
         public bool IsCurator(string userId)
             => this.data.Curators
                 .Any(x => x.UserId == userId);
+        //.Curators.Any(d => d.UserId == userId);
 
         public string IdByUser(string userId)
             => this.data.Curators

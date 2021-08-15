@@ -1,19 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MusicSystem.Data;
 using MusicSystem.Infrastructure;
 using MusicSystem.Models.Curators;
-using System.Linq;
+using MusicSystem.Services.Curators;
 using static MusicSystem.Constants;
 
 namespace MusicSystem.Controllers
 {
     public class CuratorsController : Controller
     {
-        private readonly MusicSystemDbContext data;
+        private readonly ICuratorService curators;
 
-        public CuratorsController(MusicSystemDbContext data)
-        => this.data = data;
+        public CuratorsController(ICuratorService curators)
+        => this.curators = curators;
 
         [Authorize]
         public IActionResult Become() => View();
@@ -24,8 +23,8 @@ namespace MusicSystem.Controllers
         {
             var userId = this.User.GetId();
 
-            var userIsAlreadyCurator = this.data
-                .Curators.Any(d => d.UserId == userId);
+            var userIsAlreadyCurator = this.curators.IsCurator(userId);
+                //.Curators.Any(d => d.UserId == userId);
 
             if (userIsAlreadyCurator)
             {
@@ -37,15 +36,7 @@ namespace MusicSystem.Controllers
                 return View(curator);
             }
 
-            var curatorObject = new Curator
-            {
-                Nickname = curator.Nickname,
-                Email = curator.Email,
-                UserId = userId
-            };
-
-            this.data.Curators.Add(curatorObject);
-            this.data.SaveChanges();
+            this.curators.Add(curator.Nickname, curator.Email, userId);
 
             TempData[GlobalMessageKey] = "Thank you for becoming a Curator!";
 

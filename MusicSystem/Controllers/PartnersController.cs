@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Data;
-using MusicSystem.Data.Models;
 using MusicSystem.Infrastructure;
 using MusicSystem.Models.Partners;
+using MusicSystem.Services.Partners;
 using System.Linq;
 using static MusicSystem.Constants;
 
@@ -11,10 +11,10 @@ namespace MusicSystem.Controllers
 {
     public class PartnersController : Controller
     {
-        private readonly MusicSystemDbContext data;
+        private readonly IPartnerService partners;
 
-        public PartnersController(MusicSystemDbContext data)
-        => this.data = data;
+        public PartnersController(IPartnerService partners)
+        => this.partners = partners;
 
         [Authorize]
         public IActionResult Become() => View();
@@ -25,8 +25,8 @@ namespace MusicSystem.Controllers
         {
             var userId = this.User.GetId();
 
-            var userIsAlreadyPartner = this.data
-                .Partners.Any(d => d.UserId == userId);
+            var userIsAlreadyPartner = this.partners.IsPartner(userId);
+                //.Partners.Any(d => d.UserId == userId);
 
             if (userIsAlreadyPartner)
             {
@@ -38,16 +38,7 @@ namespace MusicSystem.Controllers
                 return View(partner);
             }
 
-            var partnerObject = new Partner
-            {
-                Name = partner.CompanyName,
-                BusinessEmail = partner.BusinessEmail,
-                Website = partner.Website,
-                UserId = userId
-            };
-
-            this.data.Partners.Add(partnerObject);
-            this.data.SaveChanges();
+            this.partners.Add(partner.CompanyName, partner.BusinessEmail, partner.Website, userId);
 
             TempData[GlobalMessageKey] = "Thank you for becoming a Partner!";
 
