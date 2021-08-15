@@ -19,7 +19,7 @@ namespace MusicSystem.Data
         [Required]
         public string UserId { get; set; }
 
-        public IEnumerable<Song> Songs { get; init; }
+        public ICollection<Song> Songs { get; init; }
         = new List<Song>();
     }
 }

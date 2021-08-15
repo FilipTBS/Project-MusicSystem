@@ -16,8 +16,8 @@ namespace MusicSystem.Models.Songs
         [Display(Name = "Search by Artist name")]
         public string SearchTerm { get; init; }
 
-        public IEnumerable<SongArtistServiceModel> Artists { get; set; }
+        public ICollection<SongArtistServiceModel> Artists { get; set; }
 
-        public IEnumerable<SongServiceModel> Songs { get; set; }
+        public ICollection<SongServiceModel> Songs { get; set; }
     }
 }

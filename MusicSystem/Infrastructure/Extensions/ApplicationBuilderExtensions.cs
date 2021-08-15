@@ -51,7 +51,6 @@ namespace MusicSystem.Infrastructure
                 new Artist { Name = "Papi Hans" , Genre = "Pop"},
                 new Artist { Name = "Pavell & Venci Venc" , Genre = "Pop"},
                 new Artist { Name = "Ico Hazarta", Genre = "Rap"},
-                new Artist { Name = "Slavi Trifonov", Genre = "Chalga"},
                 new Artist { Name = "F.O.", Genre = "Rap"},
                 });
 

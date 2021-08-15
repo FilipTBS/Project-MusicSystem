@@ -34,7 +34,7 @@ namespace MusicSystem.Services.Artists
             };
         }
 
-        private static IEnumerable<ArtistServiceModel> GetArtists(IQueryable<Artist> artistQuery)
+        private static ICollection<ArtistServiceModel> GetArtists(IQueryable<Artist> artistQuery)
         => artistQuery.Select(x => new ArtistServiceModel
         {
             Id = x.Id,

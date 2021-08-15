@@ -10,7 +10,5 @@ namespace MusicSystem.Services
         public string Name { get; set; }
 
         public string Genre { get; set; }
-        public ICollection<Song> Songs { get; set; }
-            = new List<Song>();
     }
 }

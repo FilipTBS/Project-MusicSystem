@@ -10,6 +10,6 @@ namespace MusicSystem.Services
 
         public int TotalArtists { get; init; }
 
-        public IEnumerable<ArtistServiceModel> Artists { get; init; }
+        public ICollection<ArtistServiceModel> Artists { get; init; }
     }
 }

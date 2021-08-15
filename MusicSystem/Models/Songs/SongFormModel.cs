@@ -13,7 +13,7 @@ namespace MusicSystem.Models.Songs
         [Display(Name = "Artist")]
         public string ArtistId { get; set; }
 
-        public IEnumerable<SongArtistServiceModel> Artists { get; set; }
+        public ICollection<SongArtistServiceModel> Artists { get; set; }
 
         [Required, StringLength(SongGenreMaxValue, MinimumLength = SongGenreMinValue)]
         public string Genre { get; init; }

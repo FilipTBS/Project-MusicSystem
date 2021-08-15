@@ -1,0 +1,28 @@
+﻿@model FeedbackQueryServiceModel
+
+@{
+    ViewBag.Title = "All Feedbacks";
+}
+
+@if (Model.Feedbacks.Any())
+{
+    <p>Total feedbacks: @Model.TotalFeedbacks</p>
+    <div class="row">
+        @foreach (var feedback in Model.Feedbacks)
+        {
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-subtitle">Score: @feedback.Score</h6>
+                    <p>Suggestion 👇 </p>
+                    <p class="card-title">@feedback.Suggestion</p>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+
+@if (!Model.Feedbacks.Any())
+{
+    <h2 class="text-center">There are no Feedbacks available!</h2>
+}

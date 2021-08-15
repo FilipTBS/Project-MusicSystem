@@ -4,6 +4,6 @@ namespace MusicSystem.Models.Artists
 {
     public class ArtistSongsViewModel
     {
-        public IEnumerable<string> SongTitles { get; set; }
+        public ICollection<string> SongTitles { get; set; }
     }
 }

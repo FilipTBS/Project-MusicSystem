@@ -62,7 +62,7 @@ namespace MusicSystem.Services.Songs
                     c.Genre.ToLower().Contains(searchTerm.ToLower()));
             }
 
-            songsQuery = songsQuery.OrderByDescending(c => c.Id);
+            //songsQuery = songsQuery.OrderByDescending(c => c.Id);
 
             var totalSongs = songsQuery.Count();
 
@@ -130,11 +130,11 @@ namespace MusicSystem.Services.Songs
 
         public IEnumerable<LatestSongServiceModel> Latest()
         => this.data.Songs.Where(x => x.IsApproved)
-        .OrderByDescending(c => c.Id)
+        .OrderBy(c => c.Title)
         .ProjectTo<LatestSongServiceModel>(this.mapper)
         .Take(3).ToList();
 
-        private IEnumerable<SongServiceModel> GetSongs(IQueryable<Song> songQuery)
+        private ICollection<SongServiceModel> GetSongs(IQueryable<Song> songQuery)
         => songQuery.ProjectTo<SongServiceModel>(this.mapper)
            .ToList();
 
@@ -147,7 +147,7 @@ namespace MusicSystem.Services.Songs
             this.data.SaveChanges();
         }
 
-        public IEnumerable<SongArtistServiceModel> AllArtists()
+        public ICollection<SongArtistServiceModel> AllArtists()
         => this.data.Artists
            .ProjectTo<SongArtistServiceModel>(this.mapper).ToList();
         
@@ -158,7 +158,7 @@ namespace MusicSystem.Services.Songs
         public bool IsByCurator(string songId, string curatorId)
             => this.data.Songs.Any(c => c.Id == songId && c.CuratorId == curatorId);
 
-        public IEnumerable<SongServiceModel> ByUser(string userId)
+        public ICollection<SongServiceModel> ByUser(string userId)
         => GetSongs(this.data.Songs
                 .Where(c => c.Curator.UserId == userId));
 

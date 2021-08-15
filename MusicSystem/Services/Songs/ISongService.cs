@@ -38,11 +38,11 @@ namespace MusicSystem.Services.Songs
 
         public void ChangeVisility(string songId);
 
-        IEnumerable<SongServiceModel> ByUser(string userId);
+        ICollection<SongServiceModel> ByUser(string userId);
 
         bool IsByCurator(string songId, string curatorId);
 
-        IEnumerable<SongArtistServiceModel> AllArtists();
+        ICollection<SongArtistServiceModel> AllArtists();
 
         bool ArtistExists(string artistId);
     }

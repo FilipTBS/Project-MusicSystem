@@ -10,6 +10,7 @@ namespace MusicSystem.Data
         public DbSet<Song> Songs { get; set; }
         public DbSet<Curator> Curators { get; set; }
         public DbSet<Partner> Partners { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
 
         public MusicSystemDbContext(DbContextOptions<MusicSystemDbContext> options)
             : base(options)

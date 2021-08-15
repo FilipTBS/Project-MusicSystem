@@ -48,5 +48,10 @@
         {
             
         }
+        public class Feedback
+        {
+            public const int FeedbackSuggestionMinValue = 4;
+            public const int FeedbackSuggestionMaxValue = 75;
+        }
     }
 }
