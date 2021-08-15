@@ -1,0 +1,21 @@
+﻿@model BanPartnerFormModel
+
+@{
+    ViewBag.Title = "Ban a Partner";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="offset-md-2 col-md-8 col-sm-12">
+            <h2 class="text-center">@ViewBag.Title</h2>
+            <form method="post">
+                <div class="form-group">
+                    <label asp-for="BusinessEmail"></label>
+                    <textarea asp-for="BusinessEmail" class="form-control" placeholder="The Business Email of the partner to ban"></textarea>
+                    <span asp-validation-for="BusinessEmail" class="small text-danger"></span>
+                </div>
+                <input class="btn btn-primary" type="submit" value="Ban" />
+            </form>
+        </div>
+    </div>
+</div>

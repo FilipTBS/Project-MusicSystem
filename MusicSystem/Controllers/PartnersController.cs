@@ -40,7 +40,7 @@ namespace MusicSystem.Controllers
 
             var partnerObject = new Partner
             {
-                Name = partner.Name,
+                Name = partner.CompanyName,
                 BusinessEmail = partner.BusinessEmail,
                 Website = partner.Website,
                 UserId = userId

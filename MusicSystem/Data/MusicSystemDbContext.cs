@@ -41,7 +41,7 @@ namespace MusicSystem.Data
            .HasMany(x => x.Songs)
            .WithOne(x => x.Artist)
            .HasForeignKey(x => x.ArtistId)
-           .OnDelete(DeleteBehavior.Cascade);
+           .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);
         }

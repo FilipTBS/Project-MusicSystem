@@ -34,10 +34,8 @@
         }
         public class Curator
         {
-            public const int CuratorNameMinValue = 3;
-            public const int CuratorNameMaxValue = 30;
-            public const int CuratorPhoneNumberMinValue = 5;
-            public const int CuratorPhoneNumberMaxValue = 30;
+            public const int CuratorNicknameMinValue = 3;
+            public const int CuratorNicknameMaxValue = 30;
         }
 
         public class Company

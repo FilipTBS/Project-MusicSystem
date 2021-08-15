@@ -8,14 +8,6 @@
     <div class="card-body">
         <h5 class="card-subtitle">@artist.Name</h5>
         <h6 class="card-genre">@artist.Genre</h6>
-        @{  var name = artist.Name;
-            var artistSongs = this.Artists.FindArtist(name);
-            int counter = 0;
-            foreach (var songs in artistSongs.Songs)
-            {
-                counter++;
-            }}
-        <h6 class="card-genre">Songs: @counter</h6>
         <a asp-controller="Artists" asp-action="ArtistSongs" asp-route-id="@artist.Id" class="btn btn-primary">See songs</a>
     </div>
 </div>}

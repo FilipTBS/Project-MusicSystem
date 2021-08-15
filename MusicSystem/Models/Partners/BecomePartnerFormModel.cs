@@ -7,7 +7,8 @@ namespace MusicSystem.Models.Partners
     {
         [Required]
         [StringLength(CompanyNameMaxValue, MinimumLength = CompanyNameMinValue)]
-        public string Name { get; set; }
+        [Display(Name = "Company name")]
+        public string CompanyName { get; set; }
 
         [Required]
         [Display(Name = "Business Email")]

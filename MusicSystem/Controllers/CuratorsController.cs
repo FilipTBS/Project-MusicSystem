@@ -39,8 +39,8 @@ namespace MusicSystem.Controllers
 
             var curatorObject = new Curator
             {
-                Name = curator.Name,
-                PhoneNumber = curator.PhoneNumber,
+                Nickname = curator.Nickname,
+                Email = curator.Email,
                 UserId = userId
             };
 

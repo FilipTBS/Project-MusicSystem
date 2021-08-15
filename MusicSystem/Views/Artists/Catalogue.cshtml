@@ -6,7 +6,7 @@
     {
         ViewBag.Title = "Catalogue Artists";
     }
-    else if(userIsAdmin)
+    else if (userIsAdmin)
     {
         ViewBag.Title = "Manage Artists";
     }
@@ -32,7 +32,7 @@
            asp-route-searchTerm="@Model.SearchTerm"><<</a>
     </div>
 
-    @{ var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||!Model.Artists.Any(); }
+    @{ var shouldButtonBeDisabled = Model.CurrentPage == maxPage || !Model.Artists.Any(); }
 
     <div class="col-md-6">
         <a class="btn btn-info float-sm-right @(shouldButtonBeDisabled ? "disabled" : string.Empty)" style="margin-top: 10px"
@@ -51,6 +51,18 @@
 
 @if (userIsAdmin = User.IsAdmin())
 {
+    <div class='row mb-3 float-right'>
+            <ul class="nav nav-pills flex-column flex-sm-row float-right">
+                <li class="nav-item">
+                    <a asp-area="Admin" asp-controller="Curators" asp-action="Ban" class="nav-link alert-danger" aria-current="page">Ban a Curator</a>
+                </li>
+            </ul>
+            <ul class="nav nav-pills flex-column flex-sm-row">
+                <li class="nav-item">
+                    <a asp-area="Admin" asp-controller="Partners" asp-action="Ban" class="nav-link alert-danger" aria-current="page">Ban a Partner</a>
+                </li>
+            </ul>
+    </div>
     <div class='row mb-3'>
         <ul class="nav nav-pills flex-column flex-sm-row">
             <li class="nav-item">
@@ -61,6 +73,8 @@
             </li>
         </ul>
     </div>
+
+
 }
 
 <partial name="_ArtistsPartial" model="@Model.Artists" />

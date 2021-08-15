@@ -6,12 +6,12 @@ namespace MusicSystem.Models.Curators
     public class BecomeCuratorFormModel
     {
         [Required]
-        [StringLength(CuratorNameMaxValue, MinimumLength = CuratorNameMinValue)]
-        public string Name { get; set; }
+        [StringLength(CuratorNicknameMaxValue, MinimumLength = CuratorNicknameMinValue)]
+        public string Nickname { get; set; }
 
         [Required]
-        [Display(Name = "Phone Number")]      
-        [StringLength(CuratorPhoneNumberMaxValue, MinimumLength = CuratorPhoneNumberMinValue)]
-        public string PhoneNumber { get; set; }
+        [Display(Name = "Email Address")]      
+        [EmailAddress]
+        public string Email { get; set; }
     }
 }
