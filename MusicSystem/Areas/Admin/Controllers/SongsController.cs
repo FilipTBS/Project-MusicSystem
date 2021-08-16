@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MusicSystem.Infrastructure;
+using MusicSystem.Infrastructure.Extensions;
 using MusicSystem.Models.Songs;
 using MusicSystem.Services.Songs;
-using static MusicSystem.Constants;
+using static Constants;
 
 namespace MusicSystem.Areas.Admin.Controllers
 {

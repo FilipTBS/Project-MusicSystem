@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Models.Curators;
 using MusicSystem.Services.Curators;
-using static MusicSystem.Constants;
+using static Constants;
 
 namespace MusicSystem.Areas.Admin.Controllers
 {
