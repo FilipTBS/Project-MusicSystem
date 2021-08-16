@@ -77,6 +77,7 @@ namespace MusicSystem.Controllers
             return RedirectToAction(nameof(All));
         }
 
+        [Authorize]
         public IActionResult All([FromQuery] AllSongsQueryModel query)
         {
             var queryResult = this.songs.All(
@@ -187,6 +188,7 @@ namespace MusicSystem.Controllers
             return RedirectToAction(nameof(Mine));
         }
 
+        [Authorize]
         public IActionResult Lyrics(string id)
         {
             var song = this.songs.GetLyrics(id);

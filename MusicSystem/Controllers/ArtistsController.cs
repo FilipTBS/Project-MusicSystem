@@ -19,6 +19,7 @@ namespace MusicSystem.Controllers
             this.partners = partners;
         }
 
+        [Authorize]
         public IActionResult Catalogue([FromQuery] CatalogueArtistsQueryModel query)
         {
             var queryResult = this.artists.Catalogue(
@@ -33,6 +34,7 @@ namespace MusicSystem.Controllers
             return View(query);
         }
 
+        [Authorize]
         public IActionResult ArtistSongs(string id)
         {
             var artist = artists.GetArtistSongs(id);
