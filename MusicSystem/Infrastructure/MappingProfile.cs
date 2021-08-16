@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MusicSystem.Data.Models;
+using MusicSystem.Models.Songs;
 using MusicSystem.Services.Songs;
 
 namespace MusicSystem.Infrastructure
@@ -11,7 +12,7 @@ namespace MusicSystem.Infrastructure
             this.CreateMap<Artist, SongArtistServiceModel>();
 
             this.CreateMap<Song, LatestSongServiceModel>();
-            this.CreateMap<SongInfoServiceModel, SongServiceModel>();
+            this.CreateMap<SongInfoServiceModel, SongFormModel>();
 
             this.CreateMap<Song, SongServiceModel>()
                 .ForMember(c => c.ArtistName, cfg => cfg.MapFrom(c => c.Artist.Name));
