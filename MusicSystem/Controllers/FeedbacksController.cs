@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MusicSystem.Infrastructure;
+using MusicSystem.Infrastructure.Extensions;
 using MusicSystem.Models.Feedbacks;
 using MusicSystem.Services.Feedbacks;
-using static MusicSystem.Constants;
+using static Constants;
 
 namespace MusicSystem.Controllers
 {

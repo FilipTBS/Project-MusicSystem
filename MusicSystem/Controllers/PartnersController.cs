@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MusicSystem.Data;
-using MusicSystem.Infrastructure;
+using MusicSystem.Infrastructure.Extensions;
 using MusicSystem.Models.Partners;
 using MusicSystem.Services.Partners;
-using System.Linq;
-using static MusicSystem.Constants;
+using static Constants;
 
 namespace MusicSystem.Controllers
 {

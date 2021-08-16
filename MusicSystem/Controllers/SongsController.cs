@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using MusicSystem.Infrastructure;
+using MusicSystem.Infrastructure.Extensions;
 using MusicSystem.Models.Songs;
 using MusicSystem.Services.Curators;
 using MusicSystem.Services.Songs;
 using System;
-using static MusicSystem.Constants;
+using static Constants;
 
 namespace MusicSystem.Controllers
 {
