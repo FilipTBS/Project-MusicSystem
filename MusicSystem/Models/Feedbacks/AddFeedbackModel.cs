@@ -6,6 +6,7 @@ namespace MusicSystem.Models.Feedbacks
     public class AddFeedbackModel
     {
         [Required]
+        [Display(Name = "Score (rate)")]
         public int Score { get; set; }
 
         [StringLength(FeedbackSuggestionMaxValue, MinimumLength = FeedbackSuggestionMinValue)]
