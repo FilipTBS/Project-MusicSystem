@@ -1,0 +1,88 @@
+﻿@model List<ExampleSongServiceModel>
+
+@using MusicSystem.Data.Models
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Welcome aboard!";
+}
+
+<div class="sticky-top font-weight-bold text-center">
+    <h1 class="display-4">Welcome to the top chart music system!</h1>
+    @if (Model.Count() < 3)
+    {
+        <p class="lead">To see examples of approved songs you must add at least 3</p>
+        <p class="lead">So go ahead and do so</p>
+        <hr class="my-4">
+        <p class="lead">
+            @if (!User.IsAdmin())
+            {
+                <a asp-controller="Songs" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add Song</a>
+            }
+            else
+            {
+                <a asp-area="Admin" asp-controller="Songs" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add Song</a>
+            }
+        </p>
+    }
+
+
+</div>
+
+<img src="https://tbs-official.cf/project/rsz_1rsz_pic.png" class="animated bounce infinite" alt="Transparent MDB Logo" id="animated-img1">
+
+<div class="mb-5"></div>
+
+    @if (Model.Count() >= 3)
+    {
+        <label>3 example added songs:</label>
+
+        <div class="row">
+            @foreach (var song in Model)
+            {
+                <div class="card" style="max-width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-subtitle">@song.ArtistName</h5>
+                        <h5 class="card-title">@song.Title</h5>
+                        <h6 class="card-genre">@song.Genre</h6>
+                        <a href="@song.SongUrl" class="card-link">Link here</a>
+                        <a asp-controller="Songs" asp-action="Lyrics" asp-route-id="@song.Id" class="card-link">Lyrics here</a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+
+<div class="mb-5"></div>
+
+<div class="row">
+    <div class="col-12 text-center">
+        <button class="btn btn-primary" id="statistics-button">Show Statistics</button>
+    </div>
+</div>
+
+<div class="jumbotron d-none" id="statistics">
+    <div class="row">
+        <h2 class="col-md-4 text-center" id="total-songs"></h2>
+        <h2 class="col-md-4 text-center" id="total-users"></h2>
+        <h2 class="col-md-4 text-center" id="total-artists"></h2>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $('#statistics-button').on('click', ev => {
+            $.get('/api/statistics', (data) => {
+                $('#total-songs').text(data.totalSongs + " Songs");
+                $('#total-users').text(data.totalUsers + " Users");
+                $('#total-artists').text(data.totalArtists + " Artists");
+
+                $('#statistics').removeClass('d-none');
+                $('#statistics-button').hide();
+            });
+        });</script>
+}
