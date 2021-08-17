@@ -43,6 +43,7 @@ namespace MusicSystem.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Add(SongFormModel song)
         {
             var curatorId = this.curators.IdByUser(this.User.GetId());

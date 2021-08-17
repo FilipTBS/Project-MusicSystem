@@ -54,6 +54,7 @@ namespace MusicSystem.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Add(AddArtistFormModel artist)
         {
             var partnerId = this.partners.IdByUser(this.User.GetId());
