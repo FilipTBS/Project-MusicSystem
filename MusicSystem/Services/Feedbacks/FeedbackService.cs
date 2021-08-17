@@ -43,7 +43,7 @@ namespace MusicSystem.Services.Feedbacks
 
         public bool UserHasGivenFeedback(string id)
         {
-            var userGaveFeedback = this.data.Feedbacks.Where(x => x.UserId == id);
+            var userGaveFeedback = this.data.Feedbacks.Where(x => x.UserId == id).FirstOrDefault();
             if (userGaveFeedback != null)
             {
                 return true;
