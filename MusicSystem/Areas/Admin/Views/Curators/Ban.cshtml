@@ -1,0 +1,25 @@
+﻿@model BanCuratorFormModel
+
+@{
+    ViewBag.Title = "Ban a Curator";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="offset-md-2 col-md-8 col-sm-12">
+            <h2 class="text-center">@ViewBag.Title</h2>
+            <form method="post">
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <textarea asp-for="Email" class="form-control" placeholder="The email of the Curator to ban"></textarea>
+                    <span asp-validation-for="Email" class="small text-danger"></span>
+                </div>
+                <input class="btn btn-primary" type="submit" value="Ban" />
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
