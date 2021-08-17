@@ -1,0 +1,23 @@
+﻿@model AddArtistFormModel
+
+<div class="container">
+    <div class="row">
+        <div class="offset-md-2 col-md-8 col-sm-12">
+            <h2 class="text-center">@ViewBag.Title</h2>
+            <form method="post">
+                <div class="form-group">
+                    <label asp-for="Name"></label>
+                    <textarea asp-for="Name" class="form-control" placeholder="The name of the Artist"></textarea>
+                    <span asp-validation-for="Name" class="small text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Genre"></label>
+                    <input asp-for="Genre" class="form-control" placeholder="The Artists genre">
+                    <span asp-validation-for="Genre" class="small text-danger"></span>
+                </div>
+
+                <input class="btn btn-primary" type="submit" value="Save" />
+            </form>
+        </div>
+    </div>
+</div>

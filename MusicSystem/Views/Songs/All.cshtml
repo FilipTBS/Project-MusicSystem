@@ -1,0 +1,67 @@
+﻿@model AllSongsQueryModel
+
+@{
+    ViewBag.Title = "All Songs";
+}
+    <form method="get">
+        <div class="row">
+            <div class="form-group col-md-4">
+                <div class="form-group">
+                    <label asp-for="Artist"></label>
+                    <select asp-for="Artist" class="form-control">
+                        <option value="">All</option>
+
+                        @foreach (var artist in Model.Artists)
+                        {
+                            <option value="@artist.Name">@artist.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="SearchTerm"></label>
+                <input asp-for="SearchTerm" class="form-control" placeholder="Artist name">
+            </div>
+        </div>
+    </form>
+@{
+    var previousPage = Model.CurrentPage - 1;
+    if (previousPage < 1)
+    {
+        previousPage = 1;
+    }
+
+    var maxPage = Math.Ceiling((double)Model.TotalSongs / AllSongsQueryModel.SongsPerPage);
+}
+
+<div class="row mb-5">
+    <div class="col-md-6">
+        <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)"
+           asp-controller="Songs"
+           asp-action="All"
+           asp-route-currentPage="@previousPage"
+           asp-route-artist="@Model.Artist"
+           asp-route-searchTerm="@Model.SearchTerm"><<</a>
+    </div>
+
+    @{ var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
+                                                      !Model.Songs.Any(); }
+
+    <div class="col-md-6">
+        <a class="btn btn-primary float-sm-right @(shouldButtonBeDisabled ? "disabled" : string.Empty)" style="margin-top: 10px"
+           asp-controller="Songs"
+           asp-action="All"
+           asp-route-currentPage="@(Model.CurrentPage + 1)"
+           asp-route-artist="@Model.Artist"
+           asp-route-searchTerm="@Model.SearchTerm">>></a>
+    </div>
+</div>
+
+@if (!Model.Songs.Any())
+{
+    <h2 class="text-center">There are no songs available!</h2>
+}
+
+<partial name="_SongsPartial" model="@Model.Songs" />
+
+
