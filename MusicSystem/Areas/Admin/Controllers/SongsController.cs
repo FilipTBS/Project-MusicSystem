@@ -119,7 +119,7 @@ namespace MusicSystem.Areas.Admin.Controllers
                 song.Genre,
                 this.User.IsAdmin());
 
-            TempData[GlobalMessageKey] = $"Song edited a song!";
+            TempData[GlobalMessageKey] = $"You edited a song!";
 
             return RedirectToAction(nameof(Manage));
         }
