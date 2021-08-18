@@ -29,7 +29,7 @@ namespace MusicSystem.Controllers
                 exampleSongs = this.songs.Example().ToList();
 
                 var options = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
 
                 this.cache.Set("ExampleSongsCache", exampleSongs, options);
             }       
