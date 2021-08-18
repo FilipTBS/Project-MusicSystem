@@ -24,7 +24,15 @@ namespace MusicSystem.Controllers
             var userId = this.User.GetId();
 
             var userIsAlreadyPartner = this.partners.IsPartner(userId);
-                //.Partners.Any(d => d.UserId == userId);
+
+            var email = partner.BusinessEmail;
+            var sameEmailAlreadyRegistered = this.partners.CheckForSameEmail(email);
+
+            if (sameEmailAlreadyRegistered)
+            {
+                TempData[GlobalMessageKey] = "That business email is used by another Partner!";
+                return View(partner);
+            }
 
             if (userIsAlreadyPartner)
             {

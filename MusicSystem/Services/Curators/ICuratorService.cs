@@ -11,5 +11,7 @@
         public bool Exists(string email);
 
         public void Delete(string email);
+
+        public bool CheckForSameEmail(string email);
     }
 }

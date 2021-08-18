@@ -33,6 +33,10 @@ namespace MusicSystem.Services.Partners
                 .Any(x => x.UserId == userId);
         //.Partners.Any(d => d.UserId == userId);
 
+        public bool CheckForSameEmail(string businessEmail)
+        => this.data.Partners
+        .Any(x => x.BusinessEmail == businessEmail);
+
         public string IdByUser(string userId)
             => this.data.Partners
                 .Where(x => x.UserId == userId)

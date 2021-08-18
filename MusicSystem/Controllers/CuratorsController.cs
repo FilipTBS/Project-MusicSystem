@@ -24,7 +24,15 @@ namespace MusicSystem.Controllers
             var userId = this.User.GetId();
 
             var userIsAlreadyCurator = this.curators.IsCurator(userId);
-                //.Curators.Any(d => d.UserId == userId);
+
+            var email = curator.Email;
+            var sameEmailAlreadyRegistered = this.curators.CheckForSameEmail(email);
+
+            if (sameEmailAlreadyRegistered)
+            {
+                TempData[GlobalMessageKey] = "That email is used by another Curator!";
+                return View(curator);
+            }
 
             if (userIsAlreadyCurator)
             {

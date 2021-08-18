@@ -12,5 +12,7 @@
         public bool Exists(string businessEmail);
 
         public void Delete(string businessEmail);
+
+        public bool CheckForSameEmail(string businessEmail);
     }
 }

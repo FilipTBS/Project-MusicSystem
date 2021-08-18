@@ -1,7 +1,6 @@
 ﻿using MusicSystem.Data;
 using MusicSystem.Services.Curators;
 using System.Linq;
-using static MusicSystem.Data.Constants;
 
 namespace MusicSystem.Services
 {
@@ -31,6 +30,10 @@ namespace MusicSystem.Services
             => this.data.Curators
                 .Any(x => x.UserId == userId);
         //.Curators.Any(d => d.UserId == userId);
+
+        public bool CheckForSameEmail(string email)
+        => this.data.Curators
+        .Any(x => x.Email == email);
 
         public string IdByUser(string userId)
             => this.data.Curators
