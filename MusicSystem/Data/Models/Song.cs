@@ -12,6 +12,7 @@ namespace MusicSystem.Data.Models
         [Required, MaxLength(SongTitleMaxValue)]
         public string Title { get; set; }
 
+        [Required]
         public Artist Artist { get; init; }
 
         public string ArtistId { get; set; }
@@ -20,7 +21,7 @@ namespace MusicSystem.Data.Models
         [Required, MaxLength(SongGenreMaxValue)]
         public string Genre { get; set; }
 
-        [Required]
+        [Required, MaxLength(SongLyricsMaxValue)]
         public string Lyrics { get; set; }
 
         [Required]
