@@ -20,6 +20,7 @@ namespace MusicSystem.Areas.Admin.Controllers
             return View(artist);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Add()
         {
             return View(new AddArtistFormModel { });
@@ -43,7 +44,7 @@ namespace MusicSystem.Areas.Admin.Controllers
 
             TempData[GlobalMessageKey] = "You added an Artist!";
 
-            return RedirectToAction("Manage", "Songs");
+            return RedirectToAction("Catalogue", "Artists", new { area = "" });
         }
 
         public IActionResult Delete()
@@ -69,7 +70,7 @@ namespace MusicSystem.Areas.Admin.Controllers
 
             TempData[GlobalMessageKey] = "You deleted an Artist";
 
-            return RedirectToAction("Manage", "Songs");
+            return RedirectToAction("Catalogue", "Artists", new { area = "" });
         }
 
     }
