@@ -22,6 +22,7 @@
             public const int SongLanguageMaxValue = 15;
 
             public const int SongLyricsMinValue = 20;
+            public const int SongLyricsMaxValue = int.MaxValue;
         }
 
         public class Artist
