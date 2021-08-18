@@ -55,7 +55,7 @@ namespace MusicSystem.Controllers
                feedback.Score,
                feedback.Suggestion);
 
-            TempData[GlobalMessageKey] = "You added a feedback";
+            TempData[GlobalMessageKey] = "You gave your Feedback";
 
             return RedirectToAction(nameof(All));
 
