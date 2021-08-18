@@ -121,7 +121,7 @@ namespace MusicSystem.Areas.Admin.Controllers
 
             TempData[GlobalMessageKey] = $"Song edited a song!";
 
-            return RedirectToAction("Songs", "All");
+            return RedirectToAction(nameof(Manage));
         }
 
         [Authorize(Roles = "Admin")]
