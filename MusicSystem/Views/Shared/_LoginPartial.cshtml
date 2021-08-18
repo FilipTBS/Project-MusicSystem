@@ -22,9 +22,12 @@
         }
         else if (!userIsAdmin)
         {
-            <li class="nav-item">
+            @if(!userIsPartner)
+            {
+                <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="" asp-controller="Curators" asp-action="Become">Become a Curator</a>
-            </li>
+                </li>
+            }
             @if (!userIsPartner && !userIsCurator)
             {
                  <li class="nav-item">
