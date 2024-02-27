@@ -23,26 +23,26 @@ namespace MusicSystem.Data
             .HasOne(x => x.Artist)
             .WithMany(x => x.Songs)
             .HasForeignKey(x => x.ArtistId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Song>()
                 .HasOne(x => x.Curator)
                 .WithMany(x => x.Songs)
                 .HasForeignKey(x => x.CuratorId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
                 builder
                 .Entity<Curator>()
                 .HasOne<User>()
                 .WithOne()
                 .HasForeignKey<Curator>(x => x.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Artist>()
            .HasMany(x => x.Songs)
            .WithOne(x => x.Artist)
            .HasForeignKey(x => x.ArtistId)
-           .OnDelete(DeleteBehavior.Cascade);
+           .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);
         }

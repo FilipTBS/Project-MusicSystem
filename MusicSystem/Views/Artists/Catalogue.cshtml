@@ -52,16 +52,16 @@
 @if (userIsAdmin = User.IsAdmin())
 {
     <div class='row mb-3 float-right'>
-            <ul class="nav nav-pills flex-column flex-sm-row float-right">
-                <li class="nav-item">
-                    <a asp-area="Admin" asp-controller="Curators" asp-action="Ban" class="nav-link alert-danger" aria-current="page">Ban a Curator</a>
-                </li>
-            </ul>
-            <ul class="nav nav-pills flex-column flex-sm-row">
-                <li class="nav-item">
-                    <a asp-area="Admin" asp-controller="Partners" asp-action="Ban" class="nav-link alert-danger" aria-current="page">Ban a Partner</a>
-                </li>
-            </ul>
+        <ul class="nav nav-pills flex-column flex-sm-row float-right">
+            <li class="nav-item">
+                <a asp-area="Admin" asp-controller="Curators" asp-action="Ban" class="nav-link alert-danger" aria-current="page">Ban a Curator</a>
+            </li>
+        </ul>
+        <ul class="nav nav-pills flex-column flex-sm-row">
+            <li class="nav-item">
+                <a asp-area="Admin" asp-controller="Partners" asp-action="Ban" class="nav-link alert-danger" aria-current="page">Ban a Partner</a>
+            </li>
+        </ul>
     </div>
     <div class='row mb-3'>
         <ul class="nav nav-pills flex-column flex-sm-row">
@@ -77,9 +77,13 @@
 
 @if (Model.Artists.Any())
 {
-<p>Artists 👇</p> 
+    <p>Artists 👇</p>
 }
 <partial name="_ArtistsPartial" model="@Model.Artists" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
 
 
 

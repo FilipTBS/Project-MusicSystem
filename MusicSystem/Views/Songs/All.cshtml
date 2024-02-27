@@ -3,27 +3,27 @@
 @{
     ViewBag.Title = "All Songs";
 }
-    <form method="get">
-        <div class="row">
-            <div class="form-group col-md-4">
-                <div class="form-group">
-                    <label asp-for="Artist"></label>
-                    <select asp-for="Artist" class="form-control">
-                        <option value="">All</option>
+<form method="get">
+    <div class="row">
+        <div class="form-group col-md-4">
+            <div class="form-group">
+                <label asp-for="Artist"></label>
+                <select asp-for="Artist" class="form-control">
+                    <option value="">All</option>
 
-                        @foreach (var artist in Model.Artists)
-                        {
-                            <option value="@artist.Name">@artist.Name</option>
-                        }
-                    </select>
-                </div>
-            </div>
-            <div class="form-group col-md-4">
-                <label asp-for="SearchTerm"></label>
-                <input asp-for="SearchTerm" class="form-control" placeholder="Artist name">
+                    @foreach (var artist in Model.Artists)
+                    {
+                        <option value="@artist.Name">@artist.Name</option>
+                    }
+                </select>
             </div>
         </div>
-    </form>
+        <div class="form-group col-md-4">
+            <label asp-for="SearchTerm"></label>
+            <input asp-for="SearchTerm" class="form-control" placeholder="Artist name">
+        </div>
+    </div>
+</form>
 @{
     var previousPage = Model.CurrentPage - 1;
     if (previousPage < 1)
@@ -45,7 +45,7 @@
     </div>
 
     @{ var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
-                                                      !Model.Songs.Any(); }
+                                                       !Model.Songs.Any(); }
 
     <div class="col-md-6">
         <a class="btn btn-primary float-sm-right @(shouldButtonBeDisabled ? "disabled" : string.Empty)" style="margin-top: 10px"
@@ -63,5 +63,9 @@
 }
 
 <partial name="_SongsPartial" model="@Model.Songs" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
 
 

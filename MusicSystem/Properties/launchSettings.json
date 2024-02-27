@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:49959",
-      "sslPort": 44375
+      "applicationUrl": "http://localhost:41168",
+      "sslPort": 44361
     }
   },
   "profiles": {
@@ -16,7 +16,7 @@
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
       }
     },
-    "MusicSystem": {
+    "CarRentingSystem": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

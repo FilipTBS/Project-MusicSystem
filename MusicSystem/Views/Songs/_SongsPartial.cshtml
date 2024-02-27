@@ -12,26 +12,23 @@
 <div class="card">
     <div class="card-body">
         <h5 class="card-subtitle">@song.ArtistName</h5>
-        <h5 class="card-title">@song.Title</h5>
+        <h6 class="card-title">@song.Title</h6>
         <h6 class="card-genre">@song.Genre</h6>
         <a href="@song.SongUrl" class="btn btn-info">Link</a>
         <a asp-controller="Songs" asp-action="Lyrics" asp-route-id="@song.Id" class="btn btn-primary">Lyrics</a>
         @if (ViewBag.AllowSongEdit == true)
         {
-           <a asp-controller="Songs" asp-action="Edit" asp-route-id="@song.Id" class="btn btn-warning">Edit</a>
-         }
+    <a asp-controller="Songs" asp-action="Edit" asp-route-id="@song.Id" class="btn btn-warning">Edit</a>}
         @{ var userIsCurator = Curators.IsCurator(User.GetId()); }
-            
+
         @if (User.IsAdmin())
         {
-          <a asp-area="Admin" asp-controller="Songs" asp-action="Edit" asp-route-id="@song.Id" class="btn btn-warning">Edit</a>
-		  <a asp-area="Admin" asp-controller="Songs" asp-action="Delete" asp-route-id="@song.Id" class="btn btn-danger">Delete</a>
-        }
-		@if (userIsCurator)
+    <a asp-area="Admin" asp-controller="Songs" asp-action="Edit" asp-route-id="@song.Id" class="btn btn-warning">Edit</a>
+                        <a asp-area="Admin" asp-controller="Songs" asp-action="Delete" asp-route-id="@song.Id" class="btn btn-danger">Delete</a>}
+        @if (userIsCurator)
         {
-          <a asp-controller="Songs" asp-action="Edit" asp-route-id="@song.Id" class="btn btn-warning">Edit</a>
-		  <a asp-controller="Songs" asp-action="Delete" asp-route-id="@song.Id" class="btn btn-danger">Delete</a>
-        }
+    <a asp-controller="Songs" asp-action="Edit" asp-route-id="@song.Id" class="btn btn-warning">Edit</a>
+                        <a asp-controller="Songs" asp-action="Delete" asp-route-id="@song.Id" class="btn btn-danger">Delete</a>}
     </div>
 </div>}
 </div>

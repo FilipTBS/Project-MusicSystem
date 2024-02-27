@@ -1,6 +1,4 @@
-﻿using MusicSystem.Models.Songs;
-
-namespace MusicSystem.Models.Api
+﻿namespace MusicSystem.Models.Api
 {
     public class AllSongsApiRequestModel
     {
