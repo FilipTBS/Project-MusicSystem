@@ -1,0 +1,63 @@
+﻿@using MusicSystem.Data.Models
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@inject ICuratorService Curators
+@inject IPartnerService Partners
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var userId = User.GetId();
+        var userIsCurator = Curators.IsCuratorAsync(userId);
+        var userIsAdmin = User.IsAdmin();
+        var userIsPartner = Partners.IsPartnerAsync(userId);
+
+        @if (await userIsCurator && !userIsAdmin)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Songs" asp-action="Mine">My Songs</a>
+            </li>
+        }
+        else if (!userIsAdmin)
+        {
+            @if(!await userIsPartner)
+            {
+                <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Curators" asp-action="Become">Become a Curator</a>
+                </li>
+            }
+            @if (!await userIsPartner && !await userIsCurator)
+            {
+                 <li class="nav-item">
+                 <a class="nav-link text-dark" asp-area="" asp-controller="Partners" asp-action="Become">Become a Partner</a>
+                 </li>
+            }
+        }
+        else if (userIsAdmin)
+        {
+            <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Songs" asp-action="Manage">Admin</a>
+            </li>
+        }
+
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Account</a>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
+</ul>
