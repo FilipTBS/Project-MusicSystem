@@ -10,11 +10,11 @@
     @if (SignInManager.IsSignedIn(User))
     {
         var userId = User.GetId();
-        var userIsCurator = Curators.IsCurator(userId);
+        var userIsCurator = Curators.IsCuratorAsync(userId);
         var userIsAdmin = User.IsAdmin();
-        var userIsPartner = Partners.IsPartner(userId);
+        var userIsPartner = Partners.IsPartnerAsync(userId);
 
-        @if (userIsCurator && !userIsAdmin)
+        @if (await userIsCurator && !userIsAdmin)
         {
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="" asp-controller="Songs" asp-action="Mine">My Songs</a>
@@ -22,13 +22,13 @@
         }
         else if (!userIsAdmin)
         {
-            @if(!userIsPartner)
+            @if(!await userIsPartner)
             {
                 <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="" asp-controller="Curators" asp-action="Become">Become a Curator</a>
                 </li>
             }
-            @if (!userIsPartner && !userIsCurator)
+            @if (!await userIsPartner && !await userIsCurator)
             {
                  <li class="nav-item">
                  <a class="nav-link text-dark" asp-area="" asp-controller="Partners" asp-action="Become">Become a Partner</a>

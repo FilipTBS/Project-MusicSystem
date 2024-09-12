@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Models.Partners;
 using MusicSystem.Services.Partners;
+using System.Threading.Tasks;
 using static Constants;
 
 namespace MusicSystem.Areas.Admin.Controllers
@@ -20,9 +21,9 @@ namespace MusicSystem.Areas.Admin.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public IActionResult Ban(BanPartnerFormModel partner)
+        public async Task<IActionResult> Ban(BanPartnerFormModel partner)
         {
-            if (!this.partners.Exists(partner.BusinessEmail))
+            if (!await this.partners.ExistsAsync(partner.BusinessEmail))
             {
                 this.ModelState.AddModelError(nameof(partner.BusinessEmail), "Partner with that Email doesn't exist");
             }
@@ -32,7 +33,7 @@ namespace MusicSystem.Areas.Admin.Controllers
                 return View(partner);
             }
             var partnerEmail = partner.BusinessEmail;
-            this.partners.Delete(partnerEmail);
+            await this.partners.DeleteAsync(partnerEmail);
 
             TempData[GlobalMessageKey] = "You banned a Partner";
 

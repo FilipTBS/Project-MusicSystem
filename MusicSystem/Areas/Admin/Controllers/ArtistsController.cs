@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Models.Artists;
 using MusicSystem.Services;
+using System.Threading.Tasks;
 using static Constants;
 
 namespace MusicSystem.Areas.Admin.Controllers
@@ -15,7 +16,7 @@ namespace MusicSystem.Areas.Admin.Controllers
 
         public IActionResult ArtistSongs(string id)
         {
-            var artist = artists.GetArtistSongs(id);
+            var artist = artists.GetArtistSongsAsync(id);
 
             return View(artist);
         }
@@ -28,9 +29,9 @@ namespace MusicSystem.Areas.Admin.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public IActionResult Add(AddArtistFormModel artist)
+        public async Task<IActionResult> Add(AddArtistFormModel artist)
         {
-            if (this.artists.Exists(artist.Name))
+            if (await this.artists.ExistsAsync(artist.Name))
             {
                 this.ModelState.AddModelError(nameof(artist.Name), "Artist with this name already exists");
             }
@@ -40,7 +41,7 @@ namespace MusicSystem.Areas.Admin.Controllers
                 return View(artist);
             }
 
-            this.artists.Add(artist.Name, artist.Genre, artist.Songs);
+            await this.artists.AddAsync(artist.Name, artist.Genre, artist.Songs);
 
             TempData[GlobalMessageKey] = "You added an Artist!";
 
@@ -54,9 +55,9 @@ namespace MusicSystem.Areas.Admin.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public IActionResult Delete(DeleteArtistFormModel artist)
+        public async Task<IActionResult> Delete(DeleteArtistFormModel artist)
         {
-            if (!this.artists.Exists(artist.Name))
+            if (!await this.artists.ExistsAsync(artist.Name))
             {
                 this.ModelState.AddModelError(nameof(artist.Name), "Artist with that name doesn't exist");
             }
@@ -66,7 +67,7 @@ namespace MusicSystem.Areas.Admin.Controllers
                 return View(artist);
             }
             var artistName = artist.Name;
-            this.artists.Delete(artistName);
+            await this.artists.DeleteAsync(artistName);
 
             TempData[GlobalMessageKey] = "You deleted an Artist";
 

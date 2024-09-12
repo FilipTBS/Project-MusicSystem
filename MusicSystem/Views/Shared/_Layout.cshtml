@@ -29,14 +29,14 @@
                         {
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        var userIsCurator = Curators.IsCurator(User.GetId());
-                        var userIsPartner = Partners.IsPartner(User.GetId());
-                    @if (userIsCurator)
+                        var userIsCurator = Curators.IsCuratorAsync(User.GetId());
+                        var userIsPartner = Partners.IsPartnerAsync(User.GetId());
+                    @if (await userIsCurator)
                     {
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Songs" asp-action="Add">Add Song</a>
                     </li>}
-                                        @if (userIsPartner)
+                                        @if (await userIsPartner)
                                         {
                                             <li class="nav-item">
                                                 <a class="nav-link text-dark" asp-area="" asp-controller="Artists" asp-action="Add">Add Artist</a>

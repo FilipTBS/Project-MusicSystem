@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Infrastructure.Extensions;
 using MusicSystem.Models.Songs;
 using MusicSystem.Services.Songs;
+using System.Threading.Tasks;
 using static Constants;
 
 namespace MusicSystem.Areas.Admin.Controllers
@@ -21,15 +22,15 @@ namespace MusicSystem.Areas.Admin.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public IActionResult Manage([FromQuery] AllSongsQueryModel query)
+        public async Task<IActionResult> Manage([FromQuery] AllSongsQueryModel query)
         {
-            var queryResult = this.songs.All(
+            var queryResult = await this.songs.AllAsync(
                 query.Artist,
                 query.SearchTerm,
                 query.CurrentPage,
                 AllSongsQueryModel.SongsPerPage);
 
-            var songArtists = this.songs.AllArtists();
+            var songArtists = await this.songs.AllArtistsAsync();
 
             query.Artists = songArtists;
             query.TotalSongs = queryResult.TotalSongs;
@@ -41,37 +42,37 @@ namespace MusicSystem.Areas.Admin.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult ChangeVisibility(string id)
         {
-            this.songs.ChangeVisility(id);
+            this.songs.ChangeVisilityAsync(id);
 
             return RedirectToAction(nameof(Manage));
         }
 
         [Authorize(Roles = "Admin")]
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
             return View(new SongFormModel
             {
-                Artists = this.songs.AllArtists()
+                Artists = await this.songs.AllArtistsAsync()
             });
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public IActionResult Add(SongFormModel song)
+        public async Task<IActionResult> Add(SongFormModel song)
         {
-            if (!this.songs.ArtistExists(song.ArtistId))
+            if (!await this.songs.ArtistExistsAsync(song.ArtistId))
             {
                 this.ModelState.AddModelError(nameof(song.ArtistId), "This artist does not exist!");
             }
 
             if (!ModelState.IsValid)
             {
-                song.Artists = this.songs.AllArtists();
+                song.Artists = await this.songs.AllArtistsAsync();
 
                 return View(song);
             }
 
-            this.songs.Add(song.Title,
+            await this.songs.AddAsync(song.Title,
                 song.ArtistId,
                 song.Genre,
                 song.Lyrics,
@@ -85,32 +86,32 @@ namespace MusicSystem.Areas.Admin.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public IActionResult Edit(string id)
+        public async Task<IActionResult> Edit(string id)
         {
-            var song = this.songs.GetSongInfo(id);
+            var song = await this.songs.GetSongInfoAsync(id);
 
             var songForm = this.mapper.Map<SongFormModel>(song);
-            songForm.Artists = this.songs.AllArtists();
+            songForm.Artists = await this.songs.AllArtistsAsync();
             return View(songForm);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public IActionResult Edit(string id, SongFormModel song)
+        public async Task<IActionResult> Edit(string id, SongFormModel song)
         {
-            if (!this.songs.ArtistExists(song.ArtistId))
+            if (!await this.songs.ArtistExistsAsync(song.ArtistId))
             {
                 this.ModelState.AddModelError(nameof(song.ArtistId), "The artist doesn't exist!");
             }
 
             if (!ModelState.IsValid)
             {
-                song.Artists = this.songs.AllArtists();
+                song.Artists = await this.songs.AllArtistsAsync();
 
                 return View(song);
             }
 
-            this.songs.Edit(
+            await this.songs.EditAsync(
                 id,
                 song.Title,
                 song.ArtistId,
@@ -125,9 +126,9 @@ namespace MusicSystem.Areas.Admin.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
-            this.songs.Delete(id);
+            await this.songs.DeleteAsync(id);
             TempData[GlobalMessageKey] = $"You deleted a song!";
 
             return RedirectToAction(nameof(Manage));

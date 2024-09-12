@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Models.Curators;
 using MusicSystem.Services.Curators;
+using System.Threading.Tasks;
 using static Constants;
 
 namespace MusicSystem.Areas.Admin.Controllers
@@ -20,9 +21,9 @@ namespace MusicSystem.Areas.Admin.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public IActionResult Ban(BanCuratorFormModel curator)
+        public async Task<IActionResult> Ban(BanCuratorFormModel curator)
         {
-            if (!this.curators.Exists(curator.Email))
+            if (!await this.curators.ExistsAsync(curator.Email))
             {
                 this.ModelState.AddModelError(nameof(curator.Email), "Curator with that Email doesn't exist");
             }
@@ -32,7 +33,7 @@ namespace MusicSystem.Areas.Admin.Controllers
                 return View(curator);
             }
             var curatorEmail = curator.Email;
-            this.curators.Delete(curatorEmail);
+            await this.curators.DeleteAsync(curatorEmail);
 
             TempData[GlobalMessageKey] = "You banned a Curator";
 

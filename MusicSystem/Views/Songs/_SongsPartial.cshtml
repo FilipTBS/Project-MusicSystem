@@ -19,13 +19,13 @@
         @if (ViewBag.AllowSongEdit == true)
         {
     <a asp-controller="Songs" asp-action="Edit" asp-route-id="@song.Id" class="btn btn-warning">Edit</a>}
-        @{ var userIsCurator = Curators.IsCurator(User.GetId()); }
+        @{ var userIsCurator = Curators.IsCuratorAsync(User.GetId()); }
 
         @if (User.IsAdmin())
         {
     <a asp-area="Admin" asp-controller="Songs" asp-action="Edit" asp-route-id="@song.Id" class="btn btn-warning">Edit</a>
                         <a asp-area="Admin" asp-controller="Songs" asp-action="Delete" asp-route-id="@song.Id" class="btn btn-danger">Delete</a>}
-        @if (userIsCurator)
+        @if (await userIsCurator)
         {
     <a asp-controller="Songs" asp-action="Edit" asp-route-id="@song.Id" class="btn btn-warning">Edit</a>
                         <a asp-controller="Songs" asp-action="Delete" asp-route-id="@song.Id" class="btn btn-danger">Delete</a>}
