@@ -7,6 +7,7 @@ using MusicSystem.Models.Songs;
 using MusicSystem.Services.Curators;
 using MusicSystem.Services.Songs;
 using System;
+using System.Threading.Tasks;
 using static Constants;
 
 namespace MusicSystem.Controllers
@@ -29,43 +30,43 @@ namespace MusicSystem.Controllers
         }
 
         [Authorize]
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
-            if (!this.curators.IsCurator(this.User.GetId()))
+            if (!await this.curators.IsCuratorAsync(this.User.GetId()))
             {
                 return RedirectToAction(nameof(CuratorsController.Become), "Curators");
             }
 
             return View(new SongFormModel
             {
-                Artists = this.songs.AllArtists()
+                Artists = await this.songs.AllArtistsAsync()
             });
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult Add(SongFormModel song)
+        public async Task<IActionResult> Add(SongFormModel song)
         {
-            var curatorId = this.curators.IdByUser(this.User.GetId());
+            var curatorId = await this.curators.IdByUserAsync(this.User.GetId());
 
             if (curatorId == null)
             {
                 return RedirectToAction(nameof(CuratorsController.Become), "Curators");
             }
 
-            if (!this.songs.ArtistExists(song.ArtistId))
+            if (!await this.songs.ArtistExistsAsync(song.ArtistId))
             {
-                this.ModelState.AddModelError(nameof(song.ArtistId), "This artist does not exist!");
+                await Task.Run(() => this.ModelState.AddModelError(nameof(song.ArtistId), "This artist does not exist!"));
             }
 
             if (!ModelState.IsValid)
             {
-                song.Artists = this.songs.AllArtists();
+                song.Artists = await this.songs.AllArtistsAsync();
 
                 return View(song);
             }
 
-            this.songs.Add(song.Title,
+             await this.songs.AddAsync(song.Title,
                 song.ArtistId,
                 song.Genre,
                 song.Lyrics,
@@ -79,15 +80,15 @@ namespace MusicSystem.Controllers
         }
 
         [Authorize]
-        public IActionResult All([FromQuery] AllSongsQueryModel query)
+        public async Task<IActionResult> All([FromQuery] AllSongsQueryModel query)
         {
-            var queryResult = this.songs.All(
+            var queryResult = await this.songs.AllAsync(
                 query.Artist,
                 query.SearchTerm,
                 query.CurrentPage,
                 AllSongsQueryModel.SongsPerPage);
 
-            var songArtists = this.songs.AllArtists();
+            var songArtists = await this.songs.AllArtistsAsync();
 
             query.Artists = songArtists;
             query.TotalSongs = queryResult.TotalSongs;
@@ -97,24 +98,24 @@ namespace MusicSystem.Controllers
         }
 
         [Authorize]
-        public IActionResult Mine()
+        public async Task<IActionResult> Mine()
         {
-            var mySongs = this.songs.ByUser(this.User.GetId());
+            var mySongs = await this.songs.ByUserAsync(this.User.GetId());
 
             return View(mySongs);
         }
 
         [Authorize]
-        public IActionResult Edit(string id)
+        public async Task<IActionResult> Edit(string id)
         {
             var userId = this.User.GetId();
 
-            if (!this.curators.IsCurator(userId) && !User.IsAdmin())
+            if (!await this.curators.IsCuratorAsync(userId) && !User.IsAdmin())
             {
                 return RedirectToAction(nameof(CuratorsController.Become), "Dealers");
             }
 
-            var song = this.songs.GetSongInfo(id);
+            var song = await this.songs.GetSongInfoAsync(id);
 
             if (song.UserId != userId && !User.IsAdmin())
             {
@@ -122,39 +123,39 @@ namespace MusicSystem.Controllers
             }
 
             var songForm = this.mapper.Map<SongFormModel>(song);
-            songForm.Artists = this.songs.AllArtists();
+            songForm.Artists = await this.songs.AllArtistsAsync();
             return View(songForm);
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult Edit(string id, SongFormModel song)
+        public async Task<IActionResult> EditAsync(string id, SongFormModel song)
         {
-            var curatorId = this.curators.IdByUser(this.User.GetId());
+            var curatorId = await this.curators.IdByUserAsync(this.User.GetId());
 
             if (curatorId == null && !User.IsAdmin())
             {
                 return RedirectToAction(nameof(CuratorsController.Become), "Curators");
             }
 
-            if (!this.songs.ArtistExists(song.ArtistId))
+            if (!await this.songs.ArtistExistsAsync(song.ArtistId))
             {
                 this.ModelState.AddModelError(nameof(song.ArtistId), "The artist doesn't exist!");
             }
 
             if (!ModelState.IsValid)
             {
-                song.Artists = this.songs.AllArtists();
+                song.Artists = await this.songs.AllArtistsAsync();
 
                 return View(song);
             }
 
-            if (!this.songs.IsByCurator(id, curatorId) && !User.IsAdmin())
+            if (!await this.songs.IsByCuratorAsync(id, curatorId) && !User.IsAdmin())
             {
                 return BadRequest();
             }
 
-            this.songs.Edit(
+            await this.songs.EditAsync(
                 id,
                 song.Title,
                 song.ArtistId,
@@ -169,30 +170,30 @@ namespace MusicSystem.Controllers
         }
 
         [Authorize]
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
-            var curatorId = this.curators.IdByUser(this.User.GetId());
+            var curatorId = await this.curators.IdByUserAsync(this.User.GetId());
 
             if (curatorId == null && !User.IsAdmin())
             {
                 return RedirectToAction(nameof(CuratorsController.Become), "Curators");
             }
 
-            if (!this.songs.IsByCurator(id, curatorId))
+            if (!await this.songs.IsByCuratorAsync(id, curatorId))
             {
                 return Unauthorized();
             }
 
-            this.songs.Delete(id);
+            await this.songs.DeleteAsync(id);
             TempData[GlobalMessageKey] = $"Your song was deleted!";
 
             return RedirectToAction(nameof(Mine));
         }
 
         [Authorize]
-        public IActionResult Lyrics(string id)
+        public async Task<IActionResult> Lyrics(string id)
         {
-            var song = this.songs.GetLyrics(id);
+            var song = await this.songs.GetLyricsAsync(id);
 
             var songLyrics = this.cache
             .Get<SongLyricsViewModel>("SongLyricsCache");

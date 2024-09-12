@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Models.Api;
 using MusicSystem.Services.Songs;
+using System.Threading.Tasks;
 
 namespace MusicSystem.Controllers.Api
 {
@@ -14,11 +15,13 @@ namespace MusicSystem.Controllers.Api
             => this.songs = songs;
 
         [HttpGet]
-        public SongQueryServiceModel All([FromQuery] AllSongsApiRequestModel query)
-            => this.songs.All(
+        public async Task<SongQueryServiceModel> All([FromQuery] AllSongsApiRequestModel query)
+        {
+            return await this.songs.AllAsync(
                 query.Artist,
                 query.SearchTerm,
                 query.CurrentPage,
                 query.SongsPerPage);
+        }
     }
 }

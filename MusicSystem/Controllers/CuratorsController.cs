@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Infrastructure.Extensions;
 using MusicSystem.Models.Curators;
 using MusicSystem.Services.Curators;
+using System.Threading.Tasks;
 using static Constants;
 
 namespace MusicSystem.Controllers
@@ -19,22 +20,22 @@ namespace MusicSystem.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult Become(BecomeCuratorFormModel curator)
+        public async Task<IActionResult> Become(BecomeCuratorFormModel curator)
         {
             var userId = this.User.GetId();
 
-            var userIsAlreadyCurator = this.curators.IsCurator(userId);
+            var userIsAlreadyCurator = this.curators.IsCuratorAsync(userId);
 
             var email = curator.Email;
-            var sameEmailAlreadyRegistered = this.curators.CheckForSameEmail(email);
+            var sameEmailAlreadyRegistered = this.curators.CheckForSameEmailAsync(email);
 
-            if (sameEmailAlreadyRegistered)
+            if (await sameEmailAlreadyRegistered)
             {
                 TempData[GlobalMessageKey] = "That email is used by another Curator!";
                 return View(curator);
             }
 
-            if (userIsAlreadyCurator)
+            if (await userIsAlreadyCurator)
             {
                 return BadRequest();
             }
@@ -44,7 +45,7 @@ namespace MusicSystem.Controllers
                 return View(curator);
             }
 
-            this.curators.Add(curator.Nickname, curator.Email, userId);
+            await this.curators.AddAsync(curator.Nickname, curator.Email, userId);
 
             TempData[GlobalMessageKey] = "Thank you for becoming a Curator!";
 

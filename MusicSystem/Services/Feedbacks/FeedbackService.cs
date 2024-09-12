@@ -1,7 +1,9 @@
-﻿using MusicSystem.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MusicSystem.Data;
 using MusicSystem.Data.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MusicSystem.Services.Feedbacks
 {
@@ -12,7 +14,7 @@ namespace MusicSystem.Services.Feedbacks
         public FeedbackService(MusicSystemDbContext data)
             => this.data = data;
 
-        public string AddFeedback(string userId,
+        public async Task<string> AddFeedbackAsync(string userId,
            int score, string suggestion)
         {
             var feedbackData = new Feedback
@@ -22,17 +24,17 @@ namespace MusicSystem.Services.Feedbacks
                 Suggestion = suggestion,
             };
 
-            this.data.Feedbacks.Add(feedbackData);
-            this.data.SaveChanges();
+            await this.data.Feedbacks.AddAsync(feedbackData);
+            await this.data.SaveChangesAsync();
 
             return feedbackData.Id;
         }
-        public FeedbackQueryServiceModel All()
+        public async Task<FeedbackQueryServiceModel> AllAsync()
         {
-            var feedbackQuery = this.data.Feedbacks.AsQueryable();
-            var totalfeedbacks = feedbackQuery.Count();
+            var feedbackQuery =  this.data.Feedbacks.AsQueryable();
+            var totalfeedbacks = await feedbackQuery.CountAsync();
 
-            var feedbacks = GetFeedbacks(feedbackQuery);
+            var feedbacks = await GetFeedbacksAsync(feedbackQuery);
 
             return new FeedbackQueryServiceModel
             {
@@ -41,9 +43,9 @@ namespace MusicSystem.Services.Feedbacks
             };
         }
 
-        public bool UserHasGivenFeedback(string id)
+        public async Task<bool> UserHasGivenFeedbackAsync(string id)
         {
-            var userGaveFeedback = this.data.Feedbacks.Where(x => x.UserId == id).FirstOrDefault();
+            var userGaveFeedback = await this.data.Feedbacks.Where(x => x.UserId == id).FirstOrDefaultAsync();
             if (userGaveFeedback != null)
             {
                 return true;
@@ -51,13 +53,15 @@ namespace MusicSystem.Services.Feedbacks
             return false;
         }
 
-        private static ICollection<FeedbackServiceModel> GetFeedbacks(IQueryable<Feedback> feedbackQuery)
-        => feedbackQuery.Select(x => new FeedbackServiceModel
+        private static async Task<ICollection<FeedbackServiceModel>> GetFeedbacksAsync(IQueryable<Feedback> feedbackQuery)
         {
-           UserId = x.UserId,
-           Score = x.Score,
-           Suggestion = x.Suggestion
-        }).ToList();
+            return await feedbackQuery.Select(x => new FeedbackServiceModel
+            {
+                UserId = x.UserId,
+                Score = x.Score,
+                Suggestion = x.Suggestion
+            }).ToListAsync();
+        }
 
     }
 }

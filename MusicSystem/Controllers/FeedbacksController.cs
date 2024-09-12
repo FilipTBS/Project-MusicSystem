@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Infrastructure.Extensions;
 using MusicSystem.Models.Feedbacks;
 using MusicSystem.Services.Feedbacks;
+using System.Threading.Tasks;
 using static Constants;
 
 namespace MusicSystem.Controllers
@@ -23,9 +24,9 @@ namespace MusicSystem.Controllers
             return View(new AddFeedbackModel { });
         }
 
-        public IActionResult All([FromQuery] FeedbackQueryServiceModel query)
+        public async Task<IActionResult> All([FromQuery] FeedbackQueryServiceModel query)
         {
-            var queryResult = this.feedbacks.All();
+            var queryResult = await this.feedbacks.AllAsync();
 
             query.TotalFeedbacks = queryResult.TotalFeedbacks;
             query.Feedbacks = queryResult.Feedbacks;
@@ -36,11 +37,11 @@ namespace MusicSystem.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult Add(AddFeedbackModel feedback)
+        public async Task<IActionResult> Add(AddFeedbackModel feedback)
         {
             var userId = this.User.GetId();
 
-            if (this.feedbacks.UserHasGivenFeedback(userId))
+            if (await this.feedbacks.UserHasGivenFeedbackAsync(userId))
             {
                 TempData[GlobalMessageKey] = "You already provided your feedback";
 
@@ -51,7 +52,7 @@ namespace MusicSystem.Controllers
                 return View(feedback);
             }
 
-            this.feedbacks.AddFeedback(userId,
+            await this.feedbacks.AddFeedbackAsync(userId,
                feedback.Score,
                feedback.Suggestion);
 

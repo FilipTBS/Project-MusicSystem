@@ -5,6 +5,7 @@ using System.Linq;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace MusicSystem.Services.Songs
 {
@@ -19,11 +20,11 @@ namespace MusicSystem.Services.Songs
             this.mapper = mapper.ConfigurationProvider;
         }
 
-        public string Add(string title, string artistId,
+        public async Task<string> AddAsync(string title, string artistId,
         string genre, string lyrics,
         string songUrl, string curatorId, bool isApproved)
         {
-            var songData = new Song
+            var songData = new Data.Models.Song
             {
                 Title = title,
                 ArtistId = artistId,
@@ -34,13 +35,13 @@ namespace MusicSystem.Services.Songs
                 IsApproved = isApproved
             };
 
-            this.data.Songs.Add(songData);
-            this.data.SaveChanges();
+            await this.data.Songs.AddAsync(songData);
+            await this.data.SaveChangesAsync();
 
             return songData.Id;
         }
 
-        public SongQueryServiceModel All(string artist = null,
+        public async Task<SongQueryServiceModel> AllAsync(string artist = null,
             string searchTerm = null,
             int currentPage = 1, 
             int songsPerPage = 10, 
@@ -64,9 +65,9 @@ namespace MusicSystem.Services.Songs
 
             //songsQuery = songsQuery.OrderByDescending(c => c.Id);
 
-            var totalSongs = songsQuery.Count();
+            var totalSongs = await songsQuery.CountAsync();
 
-            var songs = GetSongs(songsQuery
+            var songs = await GetSongsAsync(songsQuery
                 .Skip((currentPage - 1) * songsPerPage)
                 .Take(songsPerPage));
 
@@ -79,20 +80,20 @@ namespace MusicSystem.Services.Songs
             };
         }
 
-    public SongLyricsServiceModel GetLyrics(string songId)
-    =>      this.data.Songs
+    public async Task<SongLyricsServiceModel> GetLyricsAsync(string songId)
+    =>  await this.data.Songs
                 .Where(c => c.Id == songId)
                 .Select(c => new SongLyricsServiceModel
                 {
                     Id = c.Id,
                     Lyrics = c.Lyrics
                 })
-                .FirstOrDefault();
-    public bool Edit(string songId, string title, 
+                .FirstOrDefaultAsync();
+    public async Task<bool> EditAsync(string songId, string title, 
             string artistId, string lyrics, string songUrl, 
             string genre, bool isApproved)
         {
-            var songData = this.data.Songs.Find(songId);
+            var songData = await this.data.Songs.FindAsync(songId);
 
             if (songData == null)
             {
@@ -106,61 +107,75 @@ namespace MusicSystem.Services.Songs
             songData.Genre = genre;
             songData.IsApproved = isApproved;
 
-            this.data.SaveChanges();
+            await this.data.SaveChangesAsync();
             return true;
         }
 
-        public void Delete(string songId)
+        public async Task DeleteAsync(string songId)
         {
-            var song = this.data.Songs.Find(songId);
+            var song = await this.data.Songs.FindAsync(songId);
 
             if (song != null)
             {
                 this.data.Songs.Remove(song);
 
-                this.data.SaveChanges();
-            }       
+                await this.data.SaveChangesAsync();
+            }
         }
 
-        public SongInfoServiceModel GetSongInfo(string songId)
-        => this.data.Songs
+        public async Task<SongInfoServiceModel> GetSongInfoAsync(string songId)
+        {
+            return await this.data.Songs
                 .Where(c => c.Id == songId)
                 .ProjectTo<SongInfoServiceModel>(this.mapper)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
+        }
 
-        public IEnumerable<ExampleSongServiceModel> Example()
-        => this.data.Songs.Where(x => x.IsApproved)
-        .OrderBy(c => c.Title)
-        .ProjectTo<ExampleSongServiceModel>(this.mapper)
-        .Take(3).ToList();
-
-        private ICollection<SongServiceModel> GetSongs(IQueryable<Song> songQuery)
-        => songQuery.ProjectTo<SongServiceModel>(this.mapper)
-           .ToList();
-
-        public void ChangeVisility(string songId)
+        public async Task<IEnumerable<ExampleSongServiceModel>> ExampleAsync()
         {
-            var song = this.data.Songs.Find(songId);
+           return await this.data.Songs.Where(x => x.IsApproved)
+            .OrderBy(c => c.Title)
+            .ProjectTo<ExampleSongServiceModel>(this.mapper)
+            .Take(3).ToListAsync();
+        }
+
+        private async Task<ICollection<SongServiceModel>> GetSongsAsync(IQueryable<Data.Models.Song> songQuery)
+        {
+            return await songQuery.ProjectTo<SongServiceModel>(this.mapper)
+           .ToListAsync();
+        }
+
+        public async Task ChangeVisilityAsync(string songId)
+        {
+            var song = await this.data.Songs.FindAsync(songId);
 
             song.IsApproved = !song.IsApproved;
 
-            this.data.SaveChanges();
+            await this.data.SaveChangesAsync();
         }
 
-        public ICollection<SongArtistServiceModel> AllArtists()
-        => this.data.Artists
-           .ProjectTo<SongArtistServiceModel>(this.mapper).ToList();
+        public async Task<ICollection<SongArtistServiceModel>> AllArtistsAsync()
+        {
+            return await this.data.Artists
+           .ProjectTo<SongArtistServiceModel>(this.mapper).ToListAsync();
+        }
         
-        public bool ArtistExists(string artistId)
-        => this.data.Artists
-                .Any(x => x.Id == artistId);
+        public async Task<bool> ArtistExistsAsync(string artistId)
+        {
+            return await this.data.Artists
+                .AnyAsync(x => x.Id == artistId);
+        }
 
-        public bool IsByCurator(string songId, string curatorId)
-            => this.data.Songs.Any(c => c.Id == songId && c.CuratorId == curatorId);
+        public async Task<bool> IsByCuratorAsync(string songId, string curatorId)
+        {
+            return await this.data.Songs.AnyAsync(c => c.Id == songId && c.CuratorId == curatorId);
+        }
 
-        public ICollection<SongServiceModel> ByUser(string userId)
-        => GetSongs(this.data.Songs
+        public async Task<ICollection<SongServiceModel>> ByUserAsync(string userId)
+        {
+            return await GetSongsAsync(this.data.Songs
                 .Where(c => c.Curator.UserId == userId));
+        }
 
     }
 

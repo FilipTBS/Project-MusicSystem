@@ -1,21 +1,22 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MusicSystem.Services.Songs
 {
     public interface ISongService
     {
-        SongQueryServiceModel All(string artist = null,
+        Task<SongQueryServiceModel> AllAsync(string artist = null,
                                  string searchTerm = null,
                                  int currentPage = 1,
                                  int songsPerPage = 10,
                                  bool approvedOnly = true);
 
-        SongLyricsServiceModel GetLyrics(string songId);
-        SongInfoServiceModel GetSongInfo(string songId);
+        Task<SongLyricsServiceModel> GetLyricsAsync(string songId);
+        Task<SongInfoServiceModel> GetSongInfoAsync(string songId);
 
-        IEnumerable<ExampleSongServiceModel> Example();
+        Task<IEnumerable<ExampleSongServiceModel>> ExampleAsync();
 
-        string Add(
+        Task<string> AddAsync(
             string title,
             string artistId,
             string genre,
@@ -24,7 +25,7 @@ namespace MusicSystem.Services.Songs
             string curatorId, 
             bool isApproved);
 
-        bool Edit(
+        Task<bool> EditAsync(
             string songId,
             string title,
             string artistId,
@@ -33,16 +34,16 @@ namespace MusicSystem.Services.Songs
             string genre,
             bool isApproved);
 
-        public void Delete(string songId);
+        public Task DeleteAsync(string songId);
 
-        public void ChangeVisility(string songId);
+        public Task ChangeVisilityAsync(string songId);
 
-        ICollection<SongServiceModel> ByUser(string userId);
+        Task<ICollection<SongServiceModel>> ByUserAsync(string userId);
 
-        bool IsByCurator(string songId, string curatorId);
+        Task<bool> IsByCuratorAsync(string songId, string curatorId);
 
-        ICollection<SongArtistServiceModel> AllArtists();
+        Task<ICollection<SongArtistServiceModel>> AllArtistsAsync();
 
-        bool ArtistExists(string artistId);
+        Task<bool> ArtistExistsAsync(string artistId);
     }
 }

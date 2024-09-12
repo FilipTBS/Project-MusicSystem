@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MusicSystem.Models;
 using System.Diagnostics;
-using System.Linq;
 using MusicSystem.Services.Songs;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using System;
+using System.Threading.Tasks;
 
 namespace MusicSystem.Controllers
 {
@@ -20,18 +20,18 @@ namespace MusicSystem.Controllers
             this.cache = cache;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var exampleSongs = this.cache
-                .Get<List<ExampleSongServiceModel>>("ExampleSongsCache");
+            var exampleSongs = this.cache.Get<IEnumerable<ExampleSongServiceModel>>("ExampleSongsCache");
+
             if (exampleSongs == null)
             {
-                exampleSongs = this.songs.Example().ToList();
+                exampleSongs = await this.songs.ExampleAsync();
 
                 var options = new MemoryCacheEntryOptions()
                     .SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
 
-                this.cache.Set("ExampleSongsCache", exampleSongs, options);
+                await Task.Run(() => this.cache.Set("ExampleSongsCache", exampleSongs, options));
             }       
 
             return View(exampleSongs);

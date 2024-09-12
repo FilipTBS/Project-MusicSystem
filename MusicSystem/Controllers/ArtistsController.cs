@@ -4,6 +4,7 @@ using MusicSystem.Infrastructure.Extensions;
 using MusicSystem.Models.Artists;
 using MusicSystem.Services;
 using MusicSystem.Services.Partners;
+using System.Threading.Tasks;
 using static Constants;
 
 namespace MusicSystem.Controllers
@@ -20,9 +21,9 @@ namespace MusicSystem.Controllers
         }
 
         [Authorize]
-        public IActionResult Catalogue([FromQuery] CatalogueArtistsQueryModel query)
+        public async Task<IActionResult> Catalogue([FromQuery] CatalogueArtistsQueryModel query)
         {
-            var queryResult = this.artists.Catalogue(
+            var queryResult = await this.artists.CatalogueAsync(
                 query.Artist,
                 query.SearchTerm,
                 query.CurrentPage,
@@ -35,17 +36,17 @@ namespace MusicSystem.Controllers
         }
 
         [Authorize]
-        public IActionResult ArtistSongs(string id)
+        public async Task<IActionResult> ArtistSongsAsync(string id)
         {
-            var artist = artists.GetArtistSongs(id);
+            var artist = await artists.GetArtistSongsAsync(id);
 
             return View(artist);
         }
 
         [Authorize]
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
-            if (!this.partners.IsPartner(this.User.GetId()))
+            if (!await this.partners.IsPartnerAsync(this.User.GetId()))
             {
                 return RedirectToAction(nameof(PartnersController.Become), "Partners");
             }
@@ -55,18 +56,18 @@ namespace MusicSystem.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult Add(AddArtistFormModel artist)
+        public async Task<IActionResult> Add(AddArtistFormModel artist)
         {
-            var partnerId = this.partners.IdByUser(this.User.GetId());
+            var partnerId = this.partners.IdByUserAsync(this.User.GetId());
 
             if (partnerId == null)
             {
                 return RedirectToAction(nameof(PartnersController.Become), "Partners");
             }
 
-            if (this.artists.Exists(artist.Name))
+            if (await this.artists.ExistsAsync(artist.Name))
             {
-                this.ModelState.AddModelError(nameof(artist.Name), "Artist with this name already exists");
+                await Task.Run(() => this.ModelState.AddModelError(nameof(artist.Name), "Artist with this name already exists"));
             }
 
             if (!ModelState.IsValid)
@@ -74,7 +75,7 @@ namespace MusicSystem.Controllers
                 return View(artist);
             }
 
-            this.artists.Add(artist.Name,artist.Genre, artist.Songs);
+            await this.artists.AddAsync(artist.Name, artist.Genre, artist.Songs);
 
             TempData[GlobalMessageKey] = "You added an Artist!";
 

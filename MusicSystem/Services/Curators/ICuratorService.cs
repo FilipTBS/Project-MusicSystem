@@ -1,17 +1,19 @@
-﻿namespace MusicSystem.Services.Curators
+﻿using System.Threading.Tasks;
+
+namespace MusicSystem.Services.Curators
 {
     public interface ICuratorService
     {
-        public string Add(string nickname, string email, string userId);
+        public Task<string> AddAsync(string nickname, string email, string userId);
 
-        public bool IsCurator(string userId);
+        public Task<bool> IsCuratorAsync(string userId);
 
-        public string IdByUser(string userId);
+        public Task<string> IdByUserAsync(string userId);
 
-        public bool Exists(string email);
+        public Task<bool> ExistsAsync(string email);
 
-        public void Delete(string email);
+        public Task DeleteAsync(string email);
 
-        public bool CheckForSameEmail(string email);
+        public Task<bool> CheckForSameEmailAsync(string email);
     }
 }

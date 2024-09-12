@@ -1,6 +1,8 @@
-﻿using MusicSystem.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MusicSystem.Data;
 using MusicSystem.Data.Models;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MusicSystem.Services.Partners
 {
@@ -11,7 +13,7 @@ namespace MusicSystem.Services.Partners
         public PartnerService(MusicSystemDbContext data)
             => this.data = data;
 
-        public string Add(string companyName, string businessEmail, 
+        public async Task<string> AddAsync(string companyName, string businessEmail, 
             string website, string userId)
         {
             var partnerObject = new Partner
@@ -22,42 +24,50 @@ namespace MusicSystem.Services.Partners
                 UserId = userId
             };
 
-            this.data.Partners.Add(partnerObject);
-            this.data.SaveChanges();
+            await this.data.Partners.AddAsync(partnerObject);
+            await this.data.SaveChangesAsync();
 
             return partnerObject.Id;
         }
 
-        public bool IsPartner(string userId)
-            => this.data.Partners
-                .Any(x => x.UserId == userId);
-        //.Partners.Any(d => d.UserId == userId);
+        public async Task<bool> IsPartnerAsync(string userId)
+        {
+                return await this.data.Partners
+                .AnyAsync(x => x.UserId == userId);
+                //.Partners.Any(d => d.UserId == userId);
+        }
 
-        public bool CheckForSameEmail(string businessEmail)
-        => this.data.Partners
-        .Any(x => x.BusinessEmail == businessEmail);
+        public async Task<bool> CheckForSameEmailAsync(string businessEmail)
+        {
+            return await this.data.Partners
+                .AnyAsync(x => x.BusinessEmail == businessEmail);
+        }
 
-        public string IdByUser(string userId)
-            => this.data.Partners
+        public async Task<string> IdByUserAsync(string userId)
+        {
+            return await this.data.Partners
                 .Where(x => x.UserId == userId)
                 .Select(x => x.Id)
-                .FirstOrDefault();
-
-        public bool Exists(string businessEmail)
-        => this.data.Partners
-        .Any(x => x.BusinessEmail == businessEmail);
-
-        public void Delete(string businessEmail)
+                .FirstOrDefaultAsync();
+        } 
+        
+        public async Task<bool> ExistsAsync(string businessEmail)
         {
-            var partner = this.data.Partners.Where(x => x.BusinessEmail == businessEmail).FirstOrDefault();
+           return await this.data.Partners
+                  .AnyAsync(x => x.BusinessEmail == businessEmail);
+        }
+
+        public async Task DeleteAsync(string businessEmail)
+        {
+            var partner = await this.data.Partners.Where(x => x.BusinessEmail == businessEmail).FirstOrDefaultAsync();
 
             if (partner != null)
             {
                 var Id = partner.UserId;
-                var user = this.data.Users.Where(x => x.Id == Id).FirstOrDefault();
+                var user = await this.data.Users.Where(x => x.Id == Id).FirstOrDefaultAsync();
                 this.data.Partners.Remove(partner);
                 this.data.Users.Remove(user);
-                this.data.SaveChanges();
+                await this.data.SaveChangesAsync();
             }
         }
     }

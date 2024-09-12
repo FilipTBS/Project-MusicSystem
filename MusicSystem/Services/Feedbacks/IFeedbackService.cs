@@ -1,13 +1,15 @@
-﻿namespace MusicSystem.Services.Feedbacks
+﻿using System.Threading.Tasks;
+
+namespace MusicSystem.Services.Feedbacks
 {
     public interface IFeedbackService
     {
-        public string AddFeedback(string userId,
+        public Task<string> AddFeedbackAsync(string userId,
            int score, string suggestion);
 
-        public FeedbackQueryServiceModel All();
+        public Task<FeedbackQueryServiceModel> AllAsync();
 
-        public bool UserHasGivenFeedback(string id);
+        public Task<bool> UserHasGivenFeedbackAsync(string id);
 
     }
 }

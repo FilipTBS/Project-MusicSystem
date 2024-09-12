@@ -60,6 +60,7 @@ namespace MusicSystem
             services.AddTransient<IArtistService, ArtistService>();
             services.AddTransient<IStatisticsService, StatisticsService>();
             services.AddTransient<IFeedbackService, FeedbackService>();
+            services.AddResponseCompression();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -83,6 +84,7 @@ namespace MusicSystem
                 .UseRouting()
                 .UseAuthentication()
                 .UseAuthorization()
+                .UseResponseCompression()
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapDefaultAreaRoute();
